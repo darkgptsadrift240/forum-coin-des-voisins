@@ -1,1 +1,4662 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Le Coin des Voisins — Rivière-Montmorency</title>
+  <style>
+    :root {
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-soft: rgba(224, 242, 254, 0.92);
+      --secondary: #15803d;
+      --secondary-hover: #166534;
+      --card-alpha: 0.62;
+      --surface: rgba(255, 255, 255, var(--card-alpha));
+      --surface-strong: rgba(255, 255, 255, calc(var(--card-alpha) + 0.14));
+      --surface-subtle: rgba(255, 255, 255, calc(var(--card-alpha) - 0.14));
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --border: rgba(255, 255, 255, 0.52);
+      --border-dark: rgba(15, 23, 42, 0.14);
+      --glass-blur: blur(14px) saturate(135%);
+      --bg-color: #0b1120;
+      --bg-gradient: radial-gradient(circle at top right, rgba(2, 132, 199, 0.28), transparent 50%),
+                     radial-gradient(circle at bottom left, rgba(21, 128, 61, 0.22), transparent 50%);
+    }
+
+    body.preset-riviere {
+      --bg-color: #0b1120;
+      --bg-gradient: radial-gradient(circle at top right, rgba(2, 132, 199, 0.28), transparent 50%),
+                     radial-gradient(circle at bottom left, rgba(21, 128, 61, 0.22), transparent 50%);
+    }
+
+    body.preset-soleil {
+      --bg-color: #fefce8;
+      --bg-gradient: radial-gradient(circle at top left, rgba(234, 179, 8, 0.28), transparent 50%),
+                     radial-gradient(circle at bottom right, rgba(249, 115, 22, 0.16), transparent 45%);
+    }
+
+    body.preset-crepuscule {
+      --bg-color: #f8eff2;
+      --bg-gradient: radial-gradient(circle at top right, rgba(190, 24, 93, 0.14), transparent 48%),
+                     radial-gradient(circle at bottom left, rgba(3, 105, 161, 0.16), transparent 48%);
+    }
+
+    body.preset-garage {
+      --bg-color: #1c1917;
+      --bg-gradient: radial-gradient(circle at top right, rgba(234, 179, 8, 0.18), transparent 45%),
+                     linear-gradient(180deg, #1c1917 0%, #292524 100%);
+    }
+
+    body.preset-foret {
+      --bg-color: #071a12;
+      --bg-gradient: radial-gradient(circle at top left, rgba(22, 163, 74, 0.28), transparent 52%),
+                     radial-gradient(circle at bottom right, rgba(13, 148, 136, 0.2), transparent 50%);
+    }
+
+    body.preset-brume {
+      --bg-color: #e2e8f0;
+      --bg-gradient: radial-gradient(circle at top center, rgba(100, 116, 139, 0.24), transparent 55%),
+                     linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
+    }
+
+    body.preset-ambre {
+      --bg-color: #27170a;
+      --bg-gradient: radial-gradient(circle at top right, rgba(245, 158, 11, 0.24), transparent 50%),
+                     radial-gradient(circle at bottom left, rgba(180, 83, 9, 0.2), transparent 50%);
+    }
+
+    body.preset-nuit {
+      --bg-color: #060913;
+      --bg-gradient: radial-gradient(circle at top right, rgba(56, 189, 248, 0.2), transparent 48%),
+                     radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.2), transparent 50%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      background-image: var(--bg-gradient);
+      background-size: cover;
+      background-position: center 28%;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    @media (max-width: 768px) {
+      html, body { background-attachment: scroll; }
+    }
+
+    .hidden { display: none !important; }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 0.9rem;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, calc(var(--card-alpha) + 0.16));
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .header-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      padding: 0.7rem 0;
+    }
+
+    .header-rules-bar {
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(248, 250, 252, calc(var(--card-alpha) + 0.18));
+      padding: 0.45rem 0;
+    }
+
+    .header-rules-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .rules-chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .rules-chip-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .rules-drawer-box {
+      margin-top: 0.5rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #cbd5e1;
+      font-size: 0.83rem;
+      color: var(--text-main);
+    }
+
+    .rules-drawer-box ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .field-safety-note {
+      margin: 0.35rem 0 0;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .brand-box { display: flex; align-items: center; gap: 0.7rem; }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-eyebrow {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .brand-title { margin: 0.1rem 0 0; font-size: 1.15rem; font-weight: 800; line-height: 1.2; }
+
+    .header-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: 1px solid #86efac;
+    }
+
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #16a34a; }
+
+    .main-stack {
+      padding-top: 1.1rem;
+      padding-bottom: 4.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    .main-nav-bar {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, calc(var(--card-alpha) + 0.14));
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+    }
+
+    @media (min-width: 820px) {
+      .main-nav-bar { grid-template-columns: repeat(5, 1fr); }
+    }
+
+    .main-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.72rem 0.65rem;
+      min-height: 44px;
+      border-radius: 13px;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .main-nav-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+
+    .nav-pill-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 0.4rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      background: rgba(15, 23, 42, 0.12);
+    }
+
+    .main-nav-btn.active .nav-pill-count {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    .tab-view-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+      max-width: 980px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--surface);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 10px 32px rgba(15, 23, 42, 0.14);
+      padding: 1.15rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1rem;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.65rem;
+      min-height: 32px;
+      font-size: 0.78rem;
+      border-radius: 9px;
+    }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--secondary); color: #fff; }
+    .btn-secondary:hover { background: var(--secondary-hover); }
+    .btn-warm { background: #fef08a; color: #1c1917; border-color: #eab308; }
+    .btn-ghost { background: rgba(255, 255, 255, 0.92); color: #1c1917; border-color: #d6d3d1; }
+    .btn-danger { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+
+    .floating-admin-btn {
+      position: fixed;
+      bottom: 0.9rem;
+      right: 0.9rem;
+      z-index: 55;
+      min-height: 34px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.88);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.28);
+      cursor: pointer;
+    }
+
+    .floating-admin-btn:hover { background: #0f172a; }
+
+    .left-media-widget {
+      position: fixed;
+      left: 0.85rem;
+      bottom: 0.9rem;
+      z-index: 56;
+      width: 280px;
+      max-width: calc(100vw - 1.7rem);
+      background: rgba(15, 23, 42, 0.92);
+      color: #f8fafc;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(2, 6, 23, 0.42);
+      padding: 0.7rem 0.8rem;
+      transition: width 0.18s ease, padding 0.18s ease;
+    }
+
+    .left-media-widget.expanded { width: 390px; }
+
+    .left-media-widget.compact {
+      width: auto;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+    }
+
+    .left-media-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+    }
+
+    .left-media-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .left-media-icon-btn {
+      padding: 0.25rem 0.48rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.12);
+      color: #f8fafc;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .left-media-icon-btn:hover { background: rgba(255, 255, 255, 0.22); }
+
+    .left-media-body {
+      margin-top: 0.55rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .left-media-video {
+      width: 100%;
+      max-height: 155px;
+      border-radius: 10px;
+      background: #020617;
+      display: block;
+    }
+
+    .left-media-widget.expanded .left-media-video { max-height: 250px; }
+
+    .left-media-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .left-media-vol-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.74rem;
+      color: #cbd5e1;
+    }
+
+    .left-media-vol-row input[type="range"] { flex: 1; cursor: pointer; }
+
+    .left-media-status {
+      font-size: 0.72rem;
+      color: #93c5fd;
+      min-height: 1rem;
+    }
+
+    .auth-mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+      padding: 0.35rem;
+      border-radius: 14px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-dark);
+    }
+
+    .auth-mode-btn {
+      padding: 0.55rem 0.6rem;
+      min-height: 38px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .auth-mode-btn.active { background: var(--accent); color: #fff; }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 0.7rem 0.85rem;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.94);
+      color: #0f172a;
+      font-family: inherit;
+      font-size: 0.94rem;
+    }
+
+    .label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-row-2 { display: grid; grid-template-columns: 1fr; gap: 0.85rem; }
+    @media (min-width: 600px) { .form-row-2 { grid-template-columns: 1fr 1fr; } }
+
+    .inline-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .inline-row .input { flex: 1 1 180px; }
+
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; align-items: center; }
+    @media (min-width: 800px) { .hero-grid { grid-template-columns: 1.55fr 1fr; } }
+
+    .motto-quote { font-size: 1.02rem; font-weight: 700; color: var(--accent); margin: 0.45rem 0; }
+
+    .schedule-box {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-dark);
+      border-radius: 15px;
+      padding: 0.95rem;
+    }
+
+    /* SECTION RSVP PROFESSIONNELLE & PUBLIQUE */
+    .rsvp-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+      margin: 0.8rem 0 1rem;
+    }
+
+    @media (min-width: 720px) {
+      .rsvp-stats-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .rsvp-stat-box {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 0.7rem 0.8rem;
+    }
+
+    .rsvp-stat-num {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--text-main);
+    }
+
+    .rsvp-stat-label {
+      margin-top: 0.2rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .rsvp-choices-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+    }
+
+    @media (min-width: 680px) {
+      .rsvp-choices-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .rsvp-choice-card {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.72rem 0.85rem;
+      border-radius: 14px;
+      border: 1.5px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.85);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .rsvp-choice-card input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .rsvp-choice-card.selected-yes {
+      border-color: #15803d;
+      background: #dcfce7;
+      color: #14532d;
+      box-shadow: 0 4px 12px rgba(21, 128, 61, 0.14);
+    }
+
+    .rsvp-choice-card.selected-maybe {
+      border-color: #b45309;
+      background: #fef3c7;
+      color: #78350f;
+      box-shadow: 0 4px 12px rgba(180, 83, 9, 0.14);
+    }
+
+    .rsvp-choice-card.selected-no {
+      border-color: #b91c1c;
+      background: #fee2e2;
+      color: #7f1d1d;
+      box-shadow: 0 4px 12px rgba(185, 28, 28, 0.12);
+    }
+
+    .rsvp-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.24rem 0.62rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .rsvp-badge-yes { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .rsvp-badge-maybe { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .rsvp-badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    .rsvp-entry-card {
+      padding: 0.75rem 0.85rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--border-dark);
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .rsvp-reply-box {
+      padding-left: 0.75rem;
+      border-left: 3px solid var(--accent);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      font-size: 0.84rem;
+    }
+
+    .post-top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+
+    .cat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: 1px solid transparent;
+    }
+
+    .cat-general { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+    .cat-suggestion { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .cat-plainte { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+
+    .filter-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .filter-chip-btn {
+      padding: 0.38rem 0.75rem;
+      min-height: 34px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .filter-chip-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .avatar-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-sm { width: 26px; height: 26px; font-size: 0.7rem; }
+    .avatar-lg { width: 72px; height: 72px; font-size: 1.35rem; }
+
+    .comments-box {
+      border-top: 1px solid var(--border-dark);
+      padding-top: 0.8rem;
+      margin-top: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .comment-item {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.88rem;
+    }
+
+    .comment-attach-drawer {
+      margin-top: 0.4rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .emoji-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.28rem;
+      margin-top: 0.35rem;
+      max-height: 116px;
+      overflow-y: auto;
+      padding: 0.35rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+    }
+
+    .emoji-btn {
+      padding: 0.24rem 0.45rem;
+      min-height: 32px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.92);
+      cursor: pointer;
+      font-size: 0.96rem;
+      line-height: 1.2;
+      transition: transform 0.08s ease, background 0.12s ease;
+    }
+
+    .emoji-btn:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      transform: scale(1.08);
+    }
+
+    .comment-emoji-drawer {
+      margin-top: 0.4rem;
+      padding: 0.45rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid #cbd5e1;
+    }
+
+    .dropzone-box {
+      border: 2px dashed rgba(2, 132, 199, 0.45);
+      border-radius: 14px;
+      padding: 0.85rem;
+      background: rgba(255, 255, 255, 0.68);
+      text-align: center;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .dropzone-box.drag-over {
+      border-color: var(--accent);
+      background: rgba(224, 242, 254, 0.85);
+    }
+
+    .media-preview-img {
+      max-width: 100%;
+      max-height: 260px;
+      border-radius: 12px;
+      object-fit: contain;
+      display: block;
+      margin-top: 0.55rem;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      background: rgba(15, 23, 42, 0.04);
+      cursor: zoom-in;
+    }
+
+    .media-link-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: 0.55rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid #93c5fd;
+      color: #0369a1;
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: none;
+      word-break: break-all;
+      cursor: pointer;
+    }
+
+    .media-link-card:hover { background: #e0f2fe; text-decoration: underline; }
+
+    .doc-attach-card {
+      margin-top: 0.55rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid #cbd5e1;
+      color: var(--text-main);
+      text-align: left;
+    }
+
+    .doc-text-preview {
+      margin-top: 0.45rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 9px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      max-height: 150px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #0f172a;
+    }
+
+    .lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(2, 6, 23, 0.86);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .lightbox-card {
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 18px;
+      padding: 0.9rem;
+      max-width: min(960px, 95vw);
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 74vh;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .roster-list { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.6rem; }
+
+    .roster-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: 14px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-dark);
+    }
+
+    .presence-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .presence-dot.online { background: #16a34a; }
+    .presence-dot.offline { background: #94a3b8; }
+
+    .inbox-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+      margin-top: 0.75rem;
+    }
+
+    @media (min-width: 760px) {
+      .inbox-layout {
+        grid-template-columns: 300px 1fr;
+        align-items: stretch;
+      }
+    }
+
+    .inbox-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 0.65rem;
+      max-height: 540px;
+      overflow-y: auto;
+    }
+
+    .inbox-item {
+      width: 100%;
+      text-align: left;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.65rem 0.7rem;
+      border-radius: 13px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--text-main);
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+
+    .inbox-item:hover { background: #fff; border-color: var(--accent); }
+    .inbox-item.active { background: var(--accent-soft); border-color: var(--accent); }
+    .inbox-item.has-unread { border-left: 4px solid var(--accent); background: #fff; }
+    .inbox-item-body { flex: 1; min-width: 0; }
+
+    .inbox-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.35rem;
+    }
+
+    .inbox-item-name {
+      font-size: 0.88rem;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .inbox-item-preview {
+      margin-top: 0.2rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .inbox-item.has-unread .inbox-item-preview { color: var(--text-main); font-weight: 700; }
+
+    .unread-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 0.38rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .inbox-main {
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .inbox-thread-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .pm-thread {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 220px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 0.9rem;
+      border-radius: 16px;
+      background: rgba(241, 245, 249, 0.82);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      margin-top: 0.65rem;
+    }
+
+    .pm-msg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.45rem;
+      max-width: 84%;
+    }
+
+    .pm-msg-row.mine {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+      margin-left: auto;
+    }
+
+    .pm-msg-row.theirs { align-self: flex-start; margin-right: auto; }
+
+    .pm-bubble {
+      padding: 0.6rem 0.9rem;
+      border-radius: 18px;
+      font-size: 0.92rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+      word-break: break-word;
+    }
+
+    .pm-msg-row.mine .pm-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 5px; }
+
+    .pm-msg-row.mine .pm-bubble a.media-link-card,
+    .pm-msg-row.mine .pm-bubble .doc-attach-card {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+    }
+
+    .pm-msg-row.theirs .pm-bubble {
+      background: #fff;
+      color: var(--text-main);
+      border: 1px solid #e2e8f0;
+      border-bottom-left-radius: 5px;
+    }
+
+    .pm-meta-line { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.18rem; padding: 0 0.35rem; }
+    .pm-msg-row.mine .pm-meta-line { text-align: right; }
+
+    .admin-block { border-top: 1px solid var(--border-dark); padding-top: 1rem; margin-top: 1rem; }
+
+    .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+    @media (min-width: 640px) { .preset-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .bg-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.55rem;
+      margin: 0.5rem 0 0.85rem;
+    }
+
+    @media (min-width: 640px) { .bg-gallery-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .bg-thumb-card {
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+    }
+
+    .bg-thumb-card:hover { border-color: var(--accent); }
+
+    .bg-thumb-img { width: 100%; height: 62px; object-fit: cover; display: block; }
+
+    .bg-thumb-label {
+      display: block;
+      padding: 0.32rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .code-box {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 0.75rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .feedback-msg { font-size: 0.84rem; font-weight: 700; margin: 0.45rem 0 0; }
+    .feedback-error { color: #b91c1c; }
+    .feedback-ok { color: #15803d; }
+
+    .toast-bar {
+      position: fixed;
+      bottom: 3.4rem;
+      right: 0.9rem;
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .toast-item {
+      background: #0f172a;
+      color: #fff;
+      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+  </style>
+</head>
+<body id="page-body" class="preset-riviere">
+  <div id="toast-container" class="toast-bar" aria-live="polite"></div>
+
+  <!-- PETITE PAGE / LECTEUR FLOTTANT À GAUCHE (MUSIQUE / CLIP VIDÉO FLAC, MP3, MP4) -->
+  <aside id="left-media-widget" class="left-media-widget hidden" aria-label="Lecteur musique et vidéo">
+    <div class="left-media-top">
+      <span id="left-media-title" class="left-media-title">🎵 Piste / Clip</span>
+      <div class="inline-row" style="gap: 0.25rem;">
+        <button type="button" id="btn-media-size-toggle" class="left-media-icon-btn" title="Grossir ou rapetisser">⛶ Grossir</button>
+        <button type="button" id="btn-media-compact-toggle" class="left-media-icon-btn" title="Réduire en pastille">–</button>
+        <button type="button" id="btn-media-close" class="left-media-icon-btn" title="Fermer">✕</button>
+      </div>
+    </div>
+
+    <div id="left-media-body" class="left-media-body">
+      <video id="left-media-video" class="left-media-video hidden" playsinline loop></video>
+      <audio id="left-media-audio" class="hidden" loop></audio>
+
+      <div class="left-media-controls">
+        <button type="button" id="btn-media-play-pause" class="left-media-icon-btn">⏸ Pause</button>
+        <button type="button" id="btn-media-stop" class="left-media-icon-btn">⏹ Arrêter</button>
+      </div>
+
+      <div class="left-media-vol-row">
+        <span>🔊</span>
+        <input id="left-media-volume" type="range" min="0" max="100" step="1" value="65" aria-label="Volume" />
+        <span id="left-media-vol-label">65 %</span>
+      </div>
+
+      <div id="left-media-status" class="left-media-status">Lecture auto...</div>
+    </div>
+  </aside>
+
+  <!-- VISIONNEUSE PLEIN ÉCRAN POUR TOUTES LES IMAGES -->
+  <div id="image-lightbox-modal" class="lightbox-backdrop hidden" role="dialog" aria-modal="true" aria-label="Aperçu de l'image">
+    <div class="lightbox-card" id="image-lightbox-card">
+      <div class="inline-row" style="justify-content: space-between;">
+        <strong style="font-size: 0.9rem;">Aperçu de la photo</strong>
+        <div class="inline-row">
+          <a id="lightbox-open-tab-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Ouvrir dans un nouvel onglet</a>
+          <a id="lightbox-download-link" href="#" download="photo-voisins.jpg" class="btn btn-ghost btn-sm">Télécharger</a>
+          <button type="button" id="btn-close-lightbox" class="btn btn-ghost btn-sm">Fermer</button>
+        </div>
+      </div>
+      <img id="lightbox-preview-img" src="" alt="Photo agrandie" class="lightbox-img" />
+    </div>
+  </div>
+
+  <button type="button" id="btn-floating-admin" class="floating-admin-btn">Administrateur</button>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-box">
+        <div class="brand-badge">RM</div>
+        <div>
+          <p class="brand-eyebrow">Rivière-Montmorency</p>
+          <h1 class="brand-title">Le Coin des Voisins</h1>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="neighbor-status-pill" class="status-pill hidden">
+          <span class="status-dot"></span>
+          <span>Espace privé ouvert</span>
+        </span>
+        <button type="button" id="btn-lock-neighbor" class="btn btn-ghost hidden">Verrouiller</button>
+      </div>
+    </div>
+
+    <div class="header-rules-bar">
+      <div class="container">
+        <div class="header-rules-inner">
+          <span>
+            <strong>Règlements :</strong> Petit site communautaire local — aucune info bancaire, aucun NIP ou mot de passe habituel. Restez vigilants face à la fraude.
+          </span>
+          <button type="button" id="btn-toggle-rules" class="rules-chip-btn" aria-expanded="false">
+            Règlements &amp; sécurité
+          </button>
+        </div>
+
+        <div id="header-rules-drawer" class="rules-drawer-box hidden">
+          <strong>Règlements du Coin des Voisins (Rivière-Montmorency)</strong>
+          <ul>
+            <li>Ce site est un petit espace communautaire entre voisins, pas un service financier ni une plateforme transactionnelle.</li>
+            <li>Ne publiez jamais d'informations bancaires, numéros de carte, NIP, mots de passe habituels ou renseignements personnels sensibles.</li>
+            <li>Faites preuve de prudence face à toute sollicitation ou lien suspect (prévention de la fraude) et gardez les échanges respectueux.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-stack">
+    <!-- PANNEAU DE CONTRÔLE ADMINISTRATEUR -->
+    <section id="admin-panel" class="card hidden" aria-label="Panneau de contrôle Administrateur">
+      <div class="post-top">
+        <div>
+          <p class="brand-eyebrow">Panneau de contrôle</p>
+          <h2 style="margin: 0.15rem 0 0; font-size: 1.2rem; font-weight: 800;">Administrateur</h2>
+        </div>
+        <div class="inline-row">
+          <button type="button" id="btn-lock-admin" class="btn btn-ghost hidden">Verrouiller</button>
+          <button type="button" id="btn-repair-all" class="btn btn-danger hidden">Réinitialiser tout</button>
+          <button type="button" id="btn-close-admin-panel" class="btn btn-ghost">Fermer</button>
+        </div>
+      </div>
+
+      <div id="admin-login-view" style="margin-top: 0.9rem;">
+        <form id="admin-login-form" class="inline-row" novalidate>
+          <div style="flex: 1 1 220px;">
+            <label for="admin-code-input" class="label">Code administrateur</label>
+            <input id="admin-code-input" type="password" class="input" placeholder="Entre le code" autocomplete="off" />
+          </div>
+          <div style="align-self: flex-end;">
+            <button type="submit" class="btn btn-primary">Connexion</button>
+          </div>
+        </form>
+        <p id="admin-login-feedback" class="feedback-msg hidden"></p>
+      </div>
+
+      <div id="admin-controls-view" class="hidden">
+        <div class="admin-block">
+          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">0. Demandes d'inscription à confirmer</h3>
+          <p style="margin: 0 0 0.55rem; font-size: 0.84rem; color: var(--text-muted);">
+            Clique sur <strong>Confirmer</strong> pour activer le compte : le voisin pourra ensuite se connecter directement avec son nom et son mot de passe.
+          </p>
+          <div id="admin-pending-registrations" class="roster-list"></div>
+        </div>
+
+        <div class="admin-block">
+          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">1. Styles, ambiances, images de fond &amp; translucidité</h3>
+
+          <span class="label">Ambiances &amp; styles (8 options)</span>
+          <div class="preset-grid" style="margin-bottom: 0.85rem;">
+            <button type="button" data-preset="riviere" class="btn btn-ghost preset-btn">Rivière-Montmorency</button>
+            <button type="button" data-preset="soleil" class="btn btn-ghost preset-btn">Soleil d'été</button>
+            <button type="button" data-preset="crepuscule" class="btn btn-ghost preset-btn">Crépuscule doux</button>
+            <button type="button" data-preset="garage" class="btn btn-ghost preset-btn">Ardoise garage</button>
+            <button type="button" data-preset="foret" class="btn btn-ghost preset-btn">Forêt &amp; pin</button>
+            <button type="button" data-preset="brume" class="btn btn-ghost preset-btn">Brume nordique</button>
+            <button type="button" data-preset="ambre" class="btn btn-ghost preset-btn">Ambre du soir</button>
+            <button type="button" data-preset="nuit" class="btn btn-ghost preset-btn">Nuit étoilée</button>
+          </div>
+
+          <div style="margin-bottom: 0.85rem;">
+            <label for="admin-card-opacity" class="label">
+              Translucidité des cartes (voir l'arrière-plan) : <span id="admin-opacity-value">62 %</span>
+            </label>
+            <input id="admin-card-opacity" type="range" min="35" max="92" step="1" value="62" style="width: 100%; cursor: pointer;" />
+          </div>
+
+          <span class="label">Changer l'image de fond (aperçus rapides ou fichier/URL)</span>
+          <div id="admin-bg-gallery" class="bg-gallery-grid"></div>
+
+          <div class="inline-row" style="margin-bottom: 0.55rem;">
+            <input id="admin-bg-file" type="file" accept="image/*" class="input" style="max-width: 240px; padding: 0.35rem;" />
+            <input id="admin-bg-url" type="url" class="input" placeholder="https://exemple.com/image.jpg" />
+            <button type="button" id="btn-apply-bg-url" class="btn btn-primary">Appliquer</button>
+            <button type="button" id="btn-clear-bg" class="btn btn-ghost">Effacer</button>
+          </div>
+          <p id="admin-bg-feedback" class="feedback-msg hidden"></p>
+        </div>
+
+        <div class="admin-block">
+          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">2. Boutons &amp; bannière Rivière-Montmorency</h3>
+          <div class="form-row-2" style="margin-bottom: 0.75rem;">
+            <div>
+              <label for="admin-accent-color" class="label">Couleur principale</label>
+              <input id="admin-accent-color" type="color" class="input" style="height: 42px; padding: 0.2rem;" />
+            </div>
+            <div>
+              <label for="admin-publish-label" class="label">Libellé du bouton Publier</label>
+              <input id="admin-publish-label" type="text" class="input" />
+            </div>
+          </div>
+          <div class="form-row-2" style="margin-bottom: 0.75rem;">
+            <div>
+              <label for="admin-hero-title" class="label">Titre de la bannière</label>
+              <input id="admin-hero-title" type="text" class="input" />
+            </div>
+            <div>
+              <label for="admin-hero-schedule" class="label">Horaire / Info rapide</label>
+              <input id="admin-hero-schedule" type="text" class="input" />
+            </div>
+          </div>
+          <div style="margin-bottom: 0.75rem;">
+            <label for="admin-hero-motto" class="label">Devise locale</label>
+            <input id="admin-hero-motto" type="text" class="input" />
+          </div>
+          <div style="margin-bottom: 0.75rem;">
+            <label for="admin-hero-desc" class="label">Description</label>
+            <textarea id="admin-hero-desc" rows="2" class="textarea"></textarea>
+          </div>
+          <button type="button" id="btn-save-ui-hero" class="btn btn-secondary">Enregistrer la bannière &amp; boutons</button>
+          <p id="admin-hero-feedback" class="feedback-msg hidden"></p>
+        </div>
+
+        <div class="admin-block">
+          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">3. Codes d'accès, gestion des profils &amp; publications</h3>
+          <div class="form-row-2" style="margin-bottom: 0.75rem;">
+            <div>
+              <label for="admin-new-neighbor-key" class="label">Nouveau code d'accès voisins</label>
+              <div class="inline-row">
+                <input id="admin-new-neighbor-key" type="password" class="input" placeholder="Nouveau code voisins" autocomplete="off" />
+                <button type="button" id="btn-save-neighbor-key" class="btn btn-primary">Mettre à jour</button>
+              </div>
+            </div>
+            <div>
+              <label for="admin-new-admin-code" class="label">Nouveau code administrateur</label>
+              <div class="inline-row">
+                <input id="admin-new-admin-code" type="password" class="input" placeholder="Nouveau code" autocomplete="off" />
+                <button type="button" id="btn-save-admin-code" class="btn btn-primary">Mettre à jour</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 0.75rem;">
+            <span class="label">Profils existants (supprimer un profil seulement)</span>
+            <div id="admin-profiles-list" class="roster-list"></div>
+          </div>
+
+          <div class="inline-row">
+            <button type="button" id="btn-restore-samples" class="btn btn-warm">Restaurer exemples</button>
+            <button type="button" id="btn-delete-all-posts" class="btn btn-danger">Supprimer les publications</button>
+          </div>
+          <p id="admin-action-feedback" class="feedback-msg hidden"></p>
+        </div>
+
+        <div class="admin-block">
+          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">4. Sauvegarde JSON</h3>
+          <textarea id="admin-live-config-json" rows="6" class="code-box" style="width: 100%; margin-bottom: 0.5rem;"></textarea>
+          <div class="inline-row">
+            <button type="button" id="btn-export-config-json" class="btn btn-ghost">Actualiser JSON</button>
+            <button type="button" id="btn-apply-config-json" class="btn btn-primary">Appliquer JSON</button>
+          </div>
+          <p id="admin-config-feedback" class="feedback-msg hidden"></p>
+        </div>
+
+        <div class="admin-block">
+          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">5. Musique &amp; clip vidéo (FLAC, MP3, MP4 — lecteur à gauche)</h3>
+          <p style="margin: 0 0 0.6rem; font-size: 0.84rem; color: var(--text-muted);">
+            Ajoute une piste audio (FLAC, MP3, WAV, OGG) ou un clip vidéo (MP4, WEBM) via fichier ou lien direct. La petite page à gauche s'ouvre avec le son et démarre automatiquement à l'ouverture du site (avec pause, arrêt, volume et agrandissement).
+          </p>
+
+          <div class="form-row-2" style="margin-bottom: 0.65rem;">
+            <div>
+              <label for="admin-media-title" class="label">Titre de la musique ou du clip</label>
+              <input id="admin-media-title" type="text" class="input" placeholder="Ex. Groove du bord de l'eau" />
+            </div>
+            <div>
+              <label for="admin-media-kind" class="label">Type de média</label>
+              <select id="admin-media-kind" class="select">
+                <option value="auto">Détection auto (FLAC / MP3 / MP4)</option>
+                <option value="audio">Audio (FLAC, MP3, WAV, OGG)</option>
+                <option value="video">Clip vidéo (MP4, WEBM)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="inline-row" style="margin-bottom: 0.65rem;">
+            <input id="admin-media-file" type="file" accept=".flac,.mp3,.mp4,.wav,.ogg,.webm,audio/*,video/*" class="input" style="max-width: 260px; padding: 0.35rem;" />
+            <input id="admin-media-url" type="url" class="input" placeholder="https://exemple.com/morceau.mp3 ou clip.mp4" />
+            <button type="button" id="btn-apply-media-url" class="btn btn-ghost">Appliquer lien</button>
+          </div>
+
+          <div class="inline-row">
+            <button type="button" id="btn-save-media-widget" class="btn btn-secondary">Activer &amp; sauvegarder</button>
+            <button type="button" id="btn-clear-media-widget" class="btn btn-danger">Retirer le média</button>
+          </div>
+          <p id="admin-media-feedback" class="feedback-msg hidden"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTE D'ACCÈS PRIVÉE : VEUILLEZ VOUS CONNECTER -->
+    <section id="neighbor-gate-section" class="card" style="max-width: 640px; margin: 0 auto; width: 100%;">
+      <p class="brand-eyebrow">Espace privé — Bienvenue au Coin des Voisins</p>
+      <h2 style="margin: 0.2rem 0 0.35rem; font-size: 1.35rem; font-weight: 800;">Veuillez vous connecter</h2>
+      <p style="margin: 0 0 0.9rem; font-size: 0.9rem; color: var(--text-muted);">
+        Écris ton nom de profil et ton mot de passe pour te connecter, ou inscris-toi pour confirmation par l'administrateur.
+      </p>
+
+      <div class="auth-mode-tabs" role="tablist" aria-label="Options d'accès">
+        <button type="button" data-auth-mode="login" class="auth-mode-btn active">Connexion</button>
+        <button type="button" data-auth-mode="register" class="auth-mode-btn">Inscription</button>
+        <button type="button" data-auth-mode="admin" class="auth-mode-btn">Administrateur</button>
+      </div>
+
+      <div id="auth-panel-login">
+        <form id="neighbor-login-form" style="display: flex; flex-direction: column; gap: 0.75rem;" novalidate>
+          <div>
+            <label for="login-profile-name-input" class="label">Ton profil (écris ton nom)</label>
+            <input id="login-profile-name-input" type="text" class="input" placeholder="Ex. Fredneck (bord de l’eau)" autocomplete="username" required />
+          </div>
+          <div>
+            <label for="login-code-input" class="label">Mot de passe (obligatoire)</label>
+            <input id="login-code-input" type="password" class="input" placeholder="Entre ton mot de passe" autocomplete="current-password" required />
+            <p class="field-safety-note">
+              N'utilise jamais un code habituel, un NIP de carte ou un mot de passe personnel, et n'inscris aucune info bancaire sur ce site.
+            </p>
+          </div>
+          <div class="inline-row">
+            <button type="submit" class="btn btn-primary">Connexion</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="auth-panel-register" class="hidden">
+        <form id="neighbor-register-form" style="display: flex; flex-direction: column; gap: 0.75rem;" novalidate>
+          <div>
+            <label for="register-name-input" class="label">Ton nom de profil</label>
+            <input id="register-name-input" type="text" class="input" placeholder="Ex. Fredneck (bord de l’eau)" required />
+          </div>
+          <div>
+            <label for="register-code-input" class="label">Mot de passe ou code d'accès souhaité</label>
+            <input id="register-code-input" type="password" class="input" placeholder="Choisis ton mot de passe (min. 4 car.)" autocomplete="new-password" required />
+            <p class="field-safety-note">
+              Ta demande sera envoyée à l'administrateur pour confirmation. Une fois confirmée, tu pourras te connecter avec ce nom et ce mot de passe.
+            </p>
+          </div>
+          <div class="inline-row">
+            <button type="submit" class="btn btn-secondary">Valider l'inscription</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="auth-panel-admin" class="hidden">
+        <form id="gate-admin-form" style="display: flex; flex-direction: column; gap: 0.75rem;" novalidate>
+          <div>
+            <label for="gate-admin-code-input" class="label">Code administrateur (obligatoire)</label>
+            <input id="gate-admin-code-input" type="password" class="input" placeholder="Entre le code" autocomplete="off" required />
+          </div>
+          <div class="inline-row">
+            <button type="submit" class="btn btn-primary">Connexion</button>
+          </div>
+        </form>
+      </div>
+
+      <p id="neighbor-gate-feedback" class="feedback-msg hidden"></p>
+    </section>
+
+    <!-- ESPACE VOISINS DÉVERROUILLÉ -->
+    <div id="neighbor-app-section" class="hidden">
+      <nav class="main-nav-bar" aria-label="Navigation principale" style="margin-bottom: 1.15rem;">
+        <button type="button" data-tab="feed" class="main-nav-btn active">
+          <span>Fil d'actualité</span>
+          <span id="nav-count-feed" class="nav-pill-count">0</span>
+        </button>
+        <button type="button" data-tab="pm" class="main-nav-btn">
+          <span>Messages privés</span>
+          <span id="nav-count-pm" class="nav-pill-count">0</span>
+        </button>
+        <button type="button" data-tab="presence" class="main-nav-btn">
+          <span>En ligne / Hors ligne</span>
+          <span id="nav-count-presence" class="nav-pill-count">0</span>
+        </button>
+        <button type="button" data-tab="profile" class="main-nav-btn">
+          <span>Mon profil</span>
+        </button>
+        <button type="button" data-tab="dossier" class="main-nav-btn">
+          <span>Le dossier d'en bas</span>
+          <span id="nav-count-dossier" class="nav-pill-count">0</span>
+        </button>
+      </nav>
+
+      <!-- ONGLET 1 : FIL D'ACTUALITÉ -->
+      <div id="tab-view-feed" class="tab-view-stack">
+        <!-- BANNIÈRE RIVIÈRE-MONTMORENCY — LE COIN DES VOISINS + HORAIRE -->
+        <section class="card" aria-label="Présentation et horaire">
+          <div class="hero-grid">
+            <div>
+              <p id="hero-badge-display" class="brand-eyebrow">Rivière-Montmorency — Le Coin des Voisins</p>
+              <h2 id="hero-title-display" style="margin: 0.2rem 0 0.35rem; font-size: 1.38rem; font-weight: 800;">
+                Rivière-Montmorency — Le Coin des Voisins
+              </h2>
+              <p id="hero-motto-display" class="motto-quote">
+                Du maïs, de l'eau fraîche et du bon temps entre voisins. Pas de pression, juste du respect.
+              </p>
+              <p id="hero-desc-display" style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">
+                Un espace local et convivial pour les voisins de Rivière-Montmorency afin de jaser et partager des nouvelles.
+              </p>
+            </div>
+            <div class="schedule-box">
+              <p class="brand-eyebrow" style="margin-bottom: 0.25rem;">Horaire &amp; Info</p>
+              <p id="hero-schedule-display" style="margin: 0; font-size: 0.92rem; font-weight: 700;">
+                5 à 7, étiré jusqu'à 10 h max, cet été — reste à voir pour la date.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION PUBLIQUE DE PARTICIPATION (RSVP) + INVITÉS + DÉTAILS / QUESTIONS & RÉPONSES -->
+        <section class="card" aria-label="Confirmation de présence publique">
+          <div class="post-top">
+            <div>
+              <p class="brand-eyebrow">Participation publique — Visible par tous</p>
+              <h3 style="margin: 0.15rem 0 0.25rem; font-size: 1.15rem; font-weight: 800;">
+                Qui participe au rassemblement ?
+              </h3>
+              <p style="margin: 0; font-size: 0.86rem; color: var(--text-muted);">
+                Indique ta disponibilité, le nombre d'invités et, si tu le souhaites, un détail ou une question à laquelle on peut répondre.
+              </p>
+            </div>
+          </div>
+
+          <div id="rsvp-public-stats" class="rsvp-stats-grid"></div>
+
+          <form id="rsvp-submit-form" novalidate style="display: flex; flex-direction: column; gap: 0.8rem;">
+            <div class="form-row-2">
+              <div>
+                <label for="rsvp-name-input" class="label">Nom du voisin / de la personne</label>
+                <input id="rsvp-name-input" type="text" class="input" placeholder="Ex. Fredneck (bord de l’eau)" />
+              </div>
+              <div id="rsvp-guests-wrap">
+                <label for="rsvp-guests-input" class="label">Nombre d'invités (en plus de toi)</label>
+                <input id="rsvp-guests-input" type="number" min="0" max="30" step="1" class="input" value="0" />
+              </div>
+            </div>
+
+            <div>
+              <span class="label">Ta réponse</span>
+              <div class="rsvp-choices-grid" role="radiogroup" aria-label="Choix de participation">
+                <label id="rsvp-label-yes" class="rsvp-choice-card selected-yes">
+                  <input type="radio" name="rsvpStatus" value="yes" checked />
+                  <span>✅ Oui, je participe</span>
+                </label>
+                <label id="rsvp-label-maybe" class="rsvp-choice-card">
+                  <input type="radio" name="rsvpStatus" value="maybe" />
+                  <span>🤔 Peut-être</span>
+                </label>
+                <label id="rsvp-label-no" class="rsvp-choice-card">
+                  <input type="radio" name="rsvpStatus" value="no" />
+                  <span>❌ Je ne participe pas</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label for="rsvp-note-input" class="label">Détails ou question (facultatif)</label>
+              <textarea id="rsvp-note-input" rows="2" class="textarea" placeholder="Facultatif : précise un détail (ex. j'apporte du maïs) ou pose une question..."></textarea>
+            </div>
+
+            <div class="inline-row" style="justify-content: space-between;">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">
+                Mise à jour instantanée de la liste publique.
+              </span>
+              <button type="submit" class="btn btn-primary">Enregistrer ma réponse</button>
+            </div>
+            <p id="rsvp-feedback" class="feedback-msg hidden"></p>
+          </form>
+
+          <div class="admin-block" style="margin-top: 1rem;">
+            <span class="label">Liste publique des réponses, détails &amp; questions</span>
+            <div id="rsvp-public-list" class="roster-list"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3 style="margin: 0 0 0.65rem; font-size: 1.05rem; font-weight: 800;">Nouvelle publication</h3>
+          <form id="new-post-form" novalidate style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div>
+              <label for="post-author-select" class="label">Publier comme</label>
+              <select id="post-author-select" class="select"></select>
+            </div>
+            <div>
+              <label for="post-content-input" class="label">Message</label>
+              <textarea id="post-content-input" rows="3" class="textarea" placeholder="Partage une nouvelle avec les voisins..."></textarea>
+            </div>
+
+            <div class="dropzone-box" id="post-media-dropzone">
+              <div style="font-size: 0.84rem; font-weight: 700; margin-bottom: 0.45rem;">
+                Ajouter une image ou un lien (glisse un fichier image ici, choisis un fichier, ou colle un lien)
+              </div>
+              <div class="inline-row" style="justify-content: center; margin-bottom: 0.55rem;">
+                <input id="post-file-input" type="file" accept="image/*" class="input" style="max-width: 260px; padding: 0.35rem;" />
+                <input id="post-link-input" type="url" class="input" placeholder="https://... (lien site web ou image)" />
+                <button type="button" id="btn-apply-post-link" class="btn btn-ghost">Appliquer le lien</button>
+                <button type="button" id="btn-clear-post-media" class="btn btn-ghost">Retirer</button>
+              </div>
+              <div id="post-media-preview-box" class="hidden"></div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div>
+                <span class="label" style="margin-bottom: 0.2rem;">Grande liste d'émojis rapides</span>
+                <div class="emoji-bar" data-target-input="post-content-input"></div>
+              </div>
+              <div style="align-self: flex-end;">
+                <button type="submit" id="btn-publish-post" class="btn btn-secondary">Publier sur le mur</button>
+              </div>
+            </div>
+            <p id="post-form-feedback" class="feedback-msg hidden"></p>
+          </form>
+        </section>
+
+        <div id="posts-list" style="display: flex; flex-direction: column; gap: 0.95rem;"></div>
+      </div>
+
+      <!-- ONGLET 2 : MESSAGES PRIVÉS -->
+      <div id="tab-view-pm" class="tab-view-stack hidden">
+        <section class="card">
+          <div class="post-top">
+            <div>
+              <h2 style="margin: 0; font-size: 1.15rem; font-weight: 800;">Boîte de réception — Messages privés</h2>
+              <p style="margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--text-muted);">
+                Choisis un voisin dans ta boîte de réception à gauche pour lire et répondre.
+              </p>
+            </div>
+            <div style="min-width: 210px;">
+              <label for="pm-sender-select" class="label" style="margin-bottom: 0.2rem;">Mon compte actif</label>
+              <select id="pm-sender-select" class="select" style="min-height: 36px; padding: 0.4rem 0.65rem; font-size: 0.86rem;"></select>
+            </div>
+          </div>
+
+          <div class="inbox-layout">
+            <aside aria-label="Liste des conversations">
+              <div class="inline-row" style="justify-content: space-between; margin-bottom: 0.45rem;">
+                <span class="label" style="margin: 0;">Boîte de réception</span>
+                <button type="button" id="btn-mark-all-read" class="btn btn-ghost btn-sm">Tout marquer lu</button>
+              </div>
+              <div id="pm-inbox-list" class="inbox-sidebar"></div>
+            </aside>
+
+            <div class="inbox-main">
+              <div id="pm-thread-header" class="inbox-thread-header"></div>
+
+              <div id="pm-thread" class="pm-thread"></div>
+
+              <div style="margin-top: 0.65rem;">
+                <span class="label" style="margin-bottom: 0.2rem;">Émojis rapides pour message privé</span>
+                <div class="emoji-bar" data-target-input="pm-message-input"></div>
+              </div>
+
+              <div class="dropzone-box" id="pm-media-dropzone" style="margin-top: 0.65rem;">
+                <div style="font-size: 0.82rem; font-weight: 700; margin-bottom: 0.4rem;">
+                  Joindre une image (glisser-déposer ou fichier) ou un lien cliquable
+                </div>
+                <div class="inline-row" style="justify-content: center;">
+                  <input id="pm-file-input" type="file" accept="image/*" class="input" style="max-width: 220px; padding: 0.35rem;" />
+                  <input id="pm-link-input" type="url" class="input" placeholder="https://... (lien site ou image)" />
+                  <button type="button" id="btn-apply-pm-link" class="btn btn-ghost">Appliquer</button>
+                  <button type="button" id="btn-clear-pm-media" class="btn btn-ghost">Effacer</button>
+                </div>
+                <div id="pm-media-preview-box" class="hidden"></div>
+              </div>
+
+              <form id="pm-send-form" class="inline-row" style="margin-top: 0.7rem;" novalidate>
+                <input id="pm-message-input" type="text" class="input" placeholder="Aa — Écris ta réponse..." />
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+              </form>
+              <p id="pm-feedback" class="feedback-msg hidden"></p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ONGLET 3 : PRÉSENCE -->
+      <div id="tab-view-presence" class="tab-view-stack hidden">
+        <section class="card">
+          <h2 style="margin: 0 0 0.35rem; font-size: 1.15rem; font-weight: 800;">Voisins — En ligne / Hors ligne</h2>
+          <p style="margin: 0 0 0.75rem; font-size: 0.88rem; color: var(--text-muted);">
+            Bascule ton statut ou clique sur Écrire pour ouvrir ta boîte de réception avec ce voisin.
+          </p>
+          <div id="neighbor-roster" class="roster-list"></div>
+        </section>
+      </div>
+
+      <!-- ONGLET 4 : MON PROFIL -->
+      <div id="tab-view-profile" class="tab-view-stack hidden">
+        <section class="card">
+          <h2 style="margin: 0 0 0.35rem; font-size: 1.15rem; font-weight: 800;">Mon profil</h2>
+          <p style="margin: 0 0 0.85rem; font-size: 0.86rem; color: var(--text-muted);">
+            Choisis ta photo de profil, modifie ton nom affiché et ton mot de passe perso, puis clique sur Enregistrer.
+          </p>
+
+          <form id="profile-save-form" novalidate style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <div class="inline-row" style="gap: 0.85rem;">
+              <div id="profile-avatar-preview"></div>
+              <div style="flex: 1 1 240px;">
+                <span class="label">Photo de profil</span>
+                <div class="inline-row">
+                  <input id="profile-avatar-file" type="file" accept="image/*" class="input" style="max-width: 240px; padding: 0.35rem;" />
+                  <input id="profile-avatar-url" type="url" class="input" placeholder="https://... (lien photo ou laisse vide)" />
+                  <button type="button" id="btn-apply-avatar-url" class="btn btn-ghost">Appliquer lien</button>
+                  <button type="button" id="btn-remove-avatar" class="btn btn-ghost">Retirer photo</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label for="profile-name-input" class="label">Nom affiché</label>
+              <input id="profile-name-input" type="text" class="input" placeholder="Ton nom affiché" />
+            </div>
+
+            <div class="form-row-2">
+              <div>
+                <label for="profile-new-password-input" class="label">Nouveau mot de passe du profil</label>
+                <input id="profile-new-password-input" type="password" class="input" placeholder="Laisse vide pour garder l'actuel (min. 4 car.)" autocomplete="new-password" />
+              </div>
+              <div>
+                <label for="profile-confirm-password-input" class="label">Confirmer le nouveau mot de passe</label>
+                <input id="profile-confirm-password-input" type="password" class="input" placeholder="Confirme le nouveau mot de passe" autocomplete="new-password" />
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" id="btn-save-profile" class="btn btn-primary">Enregistrer</button>
+            </div>
+          </form>
+
+          <p id="profile-feedback" class="feedback-msg hidden"></p>
+        </section>
+      </div>
+
+      <!-- ONGLET 5 : LE DOSSIER D'EN BAS -->
+      <div id="tab-view-dossier" class="tab-view-stack hidden">
+        <section class="card">
+          <p class="brand-eyebrow">Espace partagé — Suggestions, plaintes &amp; fichiers</p>
+          <h2 style="margin: 0.2rem 0 0.3rem; font-size: 1.25rem; font-weight: 800;">Le dossier d'en bas</h2>
+          <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">
+            Tout le monde peut écrire ici : messages généraux, suggestions, plaintes, liens, images et fichiers documents (PDF, .txt, .html, dossiers/archives, etc.).
+          </p>
+
+          <div class="filter-pills-row" role="tablist" aria-label="Filtrer Le dossier d'en bas">
+            <button type="button" data-dossier-filter="all" class="filter-chip-btn active">Tout voir</button>
+            <button type="button" data-dossier-filter="general" class="filter-chip-btn">Général</button>
+            <button type="button" data-dossier-filter="suggestion" class="filter-chip-btn">💡 Suggestions</button>
+            <button type="button" data-dossier-filter="plainte" class="filter-chip-btn">⚠️ Plaintes</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3 style="margin: 0 0 0.65rem; font-size: 1.05rem; font-weight: 800;">Ajouter dans Le dossier d'en bas</h3>
+          <form id="new-dossier-post-form" novalidate style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div class="form-row-2">
+              <div>
+                <label for="dossier-author-select" class="label">Publier comme</label>
+                <select id="dossier-author-select" class="select"></select>
+              </div>
+              <div>
+                <label for="dossier-category-select" class="label">Type d'entrée</label>
+                <select id="dossier-category-select" class="select">
+                  <option value="general">Général</option>
+                  <option value="suggestion">💡 Suggestion</option>
+                  <option value="plainte">⚠️ Plainte</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="dossier-content-input" class="label">Message / Suggestion / Plainte</label>
+              <textarea id="dossier-content-input" rows="3" class="textarea" placeholder="Écris ta suggestion, plainte ou note pour Le dossier d'en bas..."></textarea>
+            </div>
+
+            <div class="dropzone-box" id="dossier-media-dropzone">
+              <div style="font-size: 0.84rem; font-weight: 700; margin-bottom: 0.45rem;">
+                Joindre une image, un document (.pdf, .txt, .html, .docx, .xlsx, .zip, etc.) ou un lien (glisser-déposer, fichier ou URL)
+              </div>
+              <div class="inline-row" style="justify-content: center; margin-bottom: 0.55rem;">
+                <input id="dossier-file-input" type="file" accept="image/*,.pdf,.txt,.html,.htm,.csv,.json,.md,.log,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.7z" class="input" style="max-width: 280px; padding: 0.35rem;" />
+                <input id="dossier-link-input" type="url" class="input" placeholder="https://... (lien site, image ou document)" />
+                <button type="button" id="btn-apply-dossier-link" class="btn btn-ghost">Appliquer le lien</button>
+                <button type="button" id="btn-clear-dossier-media" class="btn btn-ghost">Retirer</button>
+              </div>
+              <div id="dossier-media-preview-box" class="hidden"></div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div>
+                <span class="label" style="margin-bottom: 0.2rem;">Grande liste d'émojis rapides</span>
+                <div class="emoji-bar" data-target-input="dossier-content-input"></div>
+              </div>
+              <div style="align-self: flex-end;">
+                <button type="submit" class="btn btn-secondary">Publier dans Le dossier d'en bas</button>
+              </div>
+            </div>
+            <p id="dossier-form-feedback" class="feedback-msg hidden"></p>
+          </form>
+        </section>
+
+        <div id="dossier-posts-list" style="display: flex; flex-direction: column; gap: 0.95rem;"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'coin_des_voisins_montmorency_v23';
+      const LEGACY_KEYS = [
+        'coin_des_voisins_montmorency_v22',
+        'coin_des_voisins_montmorency_v21',
+        'coin_des_voisins_montmorency_v20',
+        'coin_des_voisins_montmorency_v19',
+        'coin_des_voisins_montmorency_v18',
+        'coin_des_voisins_montmorency_v17',
+        'coin_des_voisins_montmorency_v16',
+        'coin_des_voisins_montmorency_v15',
+        'coin_des_voisins_montmorency_v14',
+        'coin_des_voisins_montmorency_v13',
+        'coin_des_voisins_montmorency_v12',
+        'coin_des_voisins_montmorency_v11',
+        'coin_des_voisins_montmorency_v10',
+        'coin_des_voisins_montmorency_v9',
+        'coin_des_voisins_montmorency_v8',
+        'coin_des_voisins_montmorency_v7',
+        'coin_des_voisins_montmorency_v6',
+        'coin_des_voisins_montmorency_v5',
+        'coin_des_voisins_montmorency_v4',
+        'coin_des_voisins_montmorency_v3',
+        'coin_des_voisins_montmorency_v2'
+      ];
+
+      const BG_GALLERY_ITEMS = [
+        {
+          id: 'bg-riviere',
+          label: 'Rivière & rapides',
+          url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=75'
+        },
+        {
+          id: 'bg-foret',
+          label: 'Forêt de pins',
+          url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1400&q=75'
+        },
+        {
+          id: 'bg-lac',
+          label: 'Lac & montagnes',
+          url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=75'
+        },
+        {
+          id: 'bg-atelier',
+          label: 'Bois & atelier',
+          url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1400&q=75'
+        }
+      ];
+
+      const EMOJI_CATALOG = [
+        '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊',
+        '😇', '🥰', '😍', '🤩', '😘', '😗', '😋', '😛', '😜', '🤪', '😝', '🤑',
+        '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄',
+        '😬', '😮‍💨', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢',
+        '🤮', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '🥸', '😎', '🤓', '🧐',
+        '😕', '😟', '🙁', '☹️', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨',
+        '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱',
+        '😤', '😡', '😠', '🤬', '😈', '👿', '💀', '☠️', '💩', '🤡', '👻', '👽',
+        '👍', '👎', '👌', '🤌', '🤏', '✌️', '🤞', '🫰', '🤟', '🤘', '🤙', '👈',
+        '👉', '👆', '👇', '☝️', '✋', '🤚', '🖐️', '🖖', '👋', '🤝', '💪', '🙏',
+        '👏', '🙌', '🫶', '👐', '🤲', '✍️', '💅', '🤳', '🫂', '👀', '👁️', '🧠',
+        '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❤️‍🔥', '❤️‍🩹',
+        '💕', '💞', '💓', '💗', '💖', '💘', '💝', '🔥', '💯', '💥', '💢', '💨',
+        '💫', '💦', '💤', '🎉', '🎊', '🎈', '🏆', '🥇', '⭐', '🌟', '✨', '⚡',
+        '🌊', '💧', '💦', '🏞️', '🌅', '🌄', '☀️', '🌤️', '⛅', '🌥️', '🌦️', '🌧️',
+        '⛈️', '🌩️', '❄️', '☃️', '⛄', '🌬️', '🌈', '🌲', '🌳', '🌴', '🪵', '🪨',
+        '🍃', '🍂', '🍁', '🍄', '🌾', '🌿', '🍀', '🌻', '🌹', '🎣', '🐟', '🐠',
+        '🛶', '🚤', '⛵', '🏕️', '⛺', '🔥', '🦌', '🦝', '🐦', '🦅', '🦉', '🦆',
+        '🔧', '🔨', '🪛', '🔩', '⚙️', '🛠️', '🪚', '🧲', '🪜', '🔋', '🔌', '💡',
+        '🔦', '🧯', '🛢️', '⛽', '🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑',
+        '🚒', '🚐', '🛻', '🚚', '🚛', '🚜', '🏍️', '🛵', '🚲', '🛞', '🏁', '🔊',
+        '🌽', '🍔', '🌭', '🍟', '🍕', '🌮', '🌯', '🥪', '🍗', '🍖', '🥩', '🥓',
+        '🥚', '🧀', '🥗', '🍿', '🥨', '🍩', '🍪', '🎂', '🍰', '🍫', '🍬', '🍺',
+        '🍻', '🥂', '🍷', '🥃', '🍹', '🍸', '🥤', '🧊', '☕', '🍵', '🥛', '🏡',
+        '🎵', '🎶', '🎸', '🥁', '🎤', '🎧', '📻', '📺', '📷', '📹', '📱', '💻',
+        '🔑', '🔒', '🔓', '📦', '📬', '📌', '📍', '⏰', '📅', '✅', '✔️', '❌',
+        '⚠️', '🚫', '❓', '❗', '💬', '💭', '🇨🇦', '⚜️', '🤝', '🙌', '👌', '💯'
+      ];
+
+      const DEFAULT_HERO = {
+        badge: 'Rivière-Montmorency — Le Coin des Voisins',
+        title: 'Rivière-Montmorency — Le Coin des Voisins',
+        motto: "Du maïs, de l'eau fraîche et du bon temps entre voisins. Pas de pression, juste du respect.",
+        description: "Un espace local et convivial pour les voisins de Rivière-Montmorency afin de jaser et partager des nouvelles.",
+        schedule: "5 à 7, étiré jusqu'à 10 h max, cet été — reste à voir pour la date."
+      };
+
+      const DEFAULT_NEIGHBORS = [
+        { id: 'n-fredneck', name: 'Fredneck (bord de l’eau)', online: true, passwordDigest: '', avatarUrl: '' },
+        { id: 'n-marc', name: 'Marc-Antoine (lot 4)', online: true, passwordDigest: '', avatarUrl: '' },
+        { id: 'n-chantal', name: 'Chantal (sentier rivière)', online: false, passwordDigest: '', avatarUrl: '' }
+      ];
+
+      const DEFAULT_RSVP = [
+        {
+          id: 'rsvp-1',
+          name: 'Fredneck (bord de l’eau)',
+          status: 'yes',
+          guests: 1,
+          note: "J'apporte de l'eau fraîche et du maïs. Dispo si vous avez des questions sur l'horaire ou le lieu.",
+          updatedAt: "Aujourd'hui",
+          replies: []
+        },
+        {
+          id: 'rsvp-2',
+          name: 'Marc-Antoine (lot 4)',
+          status: 'yes',
+          guests: 2,
+          note: "On arrive vers 17 h 15 avec une glacière.",
+          updatedAt: "Aujourd'hui",
+          replies: [
+            {
+              id: 'rep-1',
+              author: 'Fredneck (bord de l’eau)',
+              text: "Parfait Marc-Antoine, merci pour le coup de main !",
+              time: "À l'instant"
+            }
+          ]
+        }
+      ];
+
+      const DEFAULT_POSTS = [
+        {
+          id: 'p-1',
+          author: 'Fredneck (bord de l’eau)',
+          content: "Du maïs, de l'eau fraîche et du bon temps entre voisins. Pas de pression, juste du respect. 5 à 7, étiré jusqu'à 10 h max, cet été — reste à voir pour la date. 🌽💧",
+          imageUrl: '',
+          linkUrl: '',
+          docFile: null,
+          createdAt: "Aujourd'hui",
+          reactions: { '👍': 2, '🌽': 1 },
+          comments: [
+            { id: 'c-1', author: 'Marc-Antoine (lot 4)', text: "Partant à 100 % ! J'apporte une glacière d'eau fraîche et du maïs.", imageUrl: '', linkUrl: '', docFile: null }
+          ]
+        },
+        {
+          id: 'p-2',
+          author: 'Chantal (sentier rivière)',
+          content: "Balade tranquille le long de la rivière Montmorency, l'eau est belle et calme.",
+          imageUrl: '',
+          linkUrl: '',
+          docFile: null,
+          createdAt: "Aujourd'hui",
+          reactions: { '💧': 2 },
+          comments: []
+        }
+      ];
+
+      function computeDigest(raw) {
+        const clean = String(raw || '').trim();
+        if (!clean) return '';
+        let h1 = 0x811c9dc5;
+        let h2 = 0x01000193;
+        for (let i = 0; i < clean.length; i += 1) {
+          const code = clean.charCodeAt(i);
+          h1 ^= code;
+          h1 = Math.imul(h1, 0x01000193);
+          h2 = Math.imul(h2 ^ code, 0x85ebca6b);
+        }
+        return `${(h1 >>> 0).toString(16).padStart(8, '0')}${(h2 >>> 0).toString(16).padStart(8, '0')}`;
+      }
+
+      const accessCodeParts = ['G', 'A', 'R', 'A', 'G', 'E', '2', '0', '2', '6'];
+      const BUILTIN_ACCESS_DIGEST = computeDigest(accessCodeParts.join(''));
+
+      function normalizeRsvpList(rawList) {
+        if (!Array.isArray(rawList)) return DEFAULT_RSVP.map((r) => ({ ...r, replies: [...(r.replies || [])] }));
+        return rawList.map((r, idx) => {
+          let st = 'yes';
+          if (r.status === 'maybe' || r.status === 'no' || r.status === 'yes') {
+            st = r.status;
+          }
+          const gNum = Number(r.guests);
+          const guests = Number.isFinite(gNum) && gNum >= 0 ? Math.min(30, Math.floor(gNum)) : 0;
+          const replies = Array.isArray(r.replies)
+            ? r.replies.map((rep, ri) => ({
+                id: rep.id || `rep-${idx}-${ri}`,
+                author: String(rep.author || 'Voisin'),
+                text: String(rep.text || ''),
+                time: String(rep.time || "À l'instant")
+              }))
+            : [];
+          return {
+            id: r.id || `rsvp-${idx + 1}`,
+            name: String(r.name || `Voisin ${idx + 1}`),
+            status: st,
+            guests: st === 'no' ? 0 : guests,
+            note: String(r.note || ''),
+            updatedAt: String(r.updatedAt || "Aujourd'hui"),
+            replies
+          };
+        });
+      }
+
+      function normalizeMediaWidget(rawMedia) {
+        const base = {
+          enabled: false,
+          title: '',
+          kind: 'auto',
+          src: '',
+          volume: 0.65,
+          expanded: false,
+          compact: false,
+          dismissed: false
+        };
+        if (!rawMedia || typeof rawMedia !== 'object') return base;
+        const volNum = Number(rawMedia.volume);
+        return {
+          enabled: Boolean(rawMedia.enabled && rawMedia.src),
+          title: String(rawMedia.title || '').trim(),
+          kind: ['auto', 'audio', 'video'].includes(rawMedia.kind) ? rawMedia.kind : 'auto',
+          src: String(rawMedia.src || '').trim(),
+          volume: Number.isFinite(volNum) ? Math.min(1, Math.max(0, volNum)) : 0.65,
+          expanded: Boolean(rawMedia.expanded),
+          compact: Boolean(rawMedia.compact),
+          dismissed: false
+        };
+      }
+
+      function normalizeNeighborsList(rawList) {
+        if (!Array.isArray(rawList) || !rawList.length) {
+          return DEFAULT_NEIGHBORS.map((n) => ({ ...n }));
+        }
+        return rawList.map((n, idx) => ({
+          id: n.id || `n-${idx + 1}`,
+          name: String(n.name || `Voisin ${idx + 1}`),
+          online: Boolean(n.online),
+          passwordDigest: typeof n.passwordDigest === 'string' ? n.passwordDigest : '',
+          avatarUrl: typeof n.avatarUrl === 'string' ? n.avatarUrl : ''
+        }));
+      }
+
+      function normalizePendingRegistrations(rawList) {
+        if (!Array.isArray(rawList)) return [];
+        return rawList
+          .filter((r) => r && typeof r === 'object' && r.name)
+          .map((r, idx) => ({
+            id: r.id || `req-${idx + 1}`,
+            name: String(r.name),
+            passwordDigest: typeof r.passwordDigest === 'string' ? r.passwordDigest : '',
+            createdAt: String(r.createdAt || "À l'instant")
+          }));
+      }
+
+      function normalizeDocFile(rawDoc) {
+        if (!rawDoc || typeof rawDoc !== 'object' || !rawDoc.dataUrl) return null;
+        return {
+          name: String(rawDoc.name || 'document'),
+          mimeType: String(rawDoc.mimeType || 'application/octet-stream'),
+          size: Number(rawDoc.size || 0),
+          dataUrl: String(rawDoc.dataUrl),
+          textPreview: typeof rawDoc.textPreview === 'string' ? rawDoc.textPreview : ''
+        };
+      }
+
+      function normalizeCommentsList(rawComments, postIdx) {
+        if (!Array.isArray(rawComments)) return [];
+        return rawComments.map((c, ci) => ({
+          id: c.id || `c-${postIdx + 1}-${ci + 1}`,
+          author: String(c.author || 'Voisin'),
+          text: String(c.text || ''),
+          imageUrl: String(c.imageUrl || ''),
+          linkUrl: String(c.linkUrl || ''),
+          docFile: normalizeDocFile(c.docFile)
+        }));
+      }
+
+      function normalizePostsList(rawPosts) {
+        if (!Array.isArray(rawPosts)) return [];
+        return rawPosts.map((p, idx) => ({
+          id: p.id || `p-${idx + 1}`,
+          author: String(p.author || 'Voisin'),
+          category: p.category === 'suggestion' || p.category === 'plainte' ? p.category : 'general',
+          content: String(p.content || ''),
+          imageUrl: String(p.imageUrl || ''),
+          linkUrl: String(p.linkUrl || ''),
+          docFile: normalizeDocFile(p.docFile),
+          createdAt: String(p.createdAt || "Aujourd'hui"),
+          reactions: p.reactions && typeof p.reactions === 'object' ? { ...p.reactions } : {},
+          comments: normalizeCommentsList(p.comments, idx)
+        }));
+      }
+
+      function normalizePrivateMessages(rawMsgs) {
+        if (!Array.isArray(rawMsgs)) return [];
+        return rawMsgs.map((m, i) => ({
+          id: m.id || `pm-${i + 1}`,
+          fromId: m.fromId,
+          toId: m.toId,
+          text: String(m.text || ''),
+          imageUrl: String(m.imageUrl || ''),
+          linkUrl: String(m.linkUrl || ''),
+          time: String(m.time || "Aujourd'hui"),
+          read: m.read !== false
+        }));
+      }
+
+      function createDefaultState() {
+        return {
+          adminUnlocked: false,
+          neighborUnlocked: false,
+          authMode: 'login',
+          activeTab: 'feed',
+          dossierFilter: 'all',
+          preset: 'riviere',
+          bgImage: '',
+          cardOpacity: 0.62,
+          accentColor: '#0284c7',
+          publishButtonLabel: 'Publier sur le mur',
+          adminDigest: BUILTIN_ACCESS_DIGEST,
+          neighborDigest: BUILTIN_ACCESS_DIGEST,
+          currentUserId: 'n-fredneck',
+          pmRecipientId: 'n-marc',
+          hero: { ...DEFAULT_HERO },
+          rsvpResponses: DEFAULT_RSVP.map((r) => ({ ...r, replies: [...(r.replies || [])] })),
+          mediaWidget: normalizeMediaWidget(null),
+          neighbors: DEFAULT_NEIGHBORS.map((n) => ({ ...n })),
+          pendingRegistrations: [],
+          posts: DEFAULT_POSTS.map((p) => ({
+            ...p,
+            reactions: { ...p.reactions },
+            comments: p.comments.map((c) => ({ ...c }))
+          })),
+          dossierPosts: [],
+          privateMessages: [
+            {
+              id: 'pm-1',
+              fromId: 'n-marc',
+              toId: 'n-fredneck',
+              text: "Salut Fredneck, dis-moi si t'as besoin d'un coup de main sur le terrain cette semaine.",
+              imageUrl: '',
+              linkUrl: '',
+              time: "Aujourd'hui",
+              read: false
+            }
+          ]
+        };
+      }
+
+      let state = loadState();
+      let draftMediaWidget = {
+        title: state.mediaWidget.title || '',
+        kind: state.mediaWidget.kind || 'auto',
+        src: state.mediaWidget.src || ''
+      };
+      let draftPostMedia = { imageUrl: '', linkUrl: '', docFile: null };
+      let draftDossierMedia = { imageUrl: '', linkUrl: '', docFile: null };
+      let draftPmMedia = { imageUrl: '', linkUrl: '' };
+      const draftCommentMediaMap = new Map();
+      let draftAvatarUrl = '';
+      let draftAvatarInitializedForId = '';
+      let rsvpNamePrefilledForId = '';
+      const openCommentEmojiKeys = new Set();
+      const openCommentAttachKeys = new Set();
+      let autoplayRetryBound = false;
+
+      function getCommentDraft(drawerKey) {
+        if (!draftCommentMediaMap.has(drawerKey)) {
+          draftCommentMediaMap.set(drawerKey, { imageUrl: '', linkUrl: '', docFile: null });
+        }
+        return draftCommentMediaMap.get(drawerKey);
+      }
+
+      function loadState() {
+        try {
+          let raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            for (const k of LEGACY_KEYS) {
+              const oldRaw = localStorage.getItem(k);
+              if (oldRaw) {
+                raw = oldRaw;
+                break;
+              }
+            }
+          }
+          if (!raw) return createDefaultState();
+          const parsed = JSON.parse(raw);
+          const base = createDefaultState();
+          const numAlpha = Number(parsed.cardOpacity);
+          return {
+            ...base,
+            ...parsed,
+            adminUnlocked: false,
+            neighborUnlocked: false,
+            cardOpacity: Number.isFinite(numAlpha) ? Math.min(0.92, Math.max(0.35, numAlpha)) : base.cardOpacity,
+            dossierFilter: ['all', 'general', 'suggestion', 'plainte'].includes(parsed.dossierFilter)
+              ? parsed.dossierFilter
+              : 'all',
+            adminDigest: typeof parsed.adminDigest === 'string' && parsed.adminDigest ? parsed.adminDigest : BUILTIN_ACCESS_DIGEST,
+            neighborDigest: typeof parsed.neighborDigest === 'string' && parsed.neighborDigest ? parsed.neighborDigest : BUILTIN_ACCESS_DIGEST,
+            hero: { ...base.hero, ...(parsed.hero || {}) },
+            rsvpResponses: normalizeRsvpList(parsed.rsvpResponses),
+            mediaWidget: normalizeMediaWidget(parsed.mediaWidget),
+            neighbors: normalizeNeighborsList(parsed.neighbors),
+            pendingRegistrations: normalizePendingRegistrations(parsed.pendingRegistrations),
+            posts: Array.isArray(parsed.posts) ? normalizePostsList(parsed.posts) : base.posts,
+            dossierPosts: Array.isArray(parsed.dossierPosts) ? normalizePostsList(parsed.dossierPosts) : base.dossierPosts,
+            privateMessages: Array.isArray(parsed.privateMessages) ? normalizePrivateMessages(parsed.privateMessages) : base.privateMessages
+          };
+        } catch (_e) {
+          return createDefaultState();
+        }
+      }
+
+      function saveState() {
+        try {
+          const toStore = {
+            ...state,
+            adminUnlocked: false,
+            neighborUnlocked: false
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+        } catch (_e) {
+          showToast('Stockage local plein : retire un gros fichier ou une grosse image.');
+        }
+      }
+
+      function showToast(msg) {
+        const box = document.getElementById('toast-container');
+        if (!box) return;
+        const item = document.createElement('div');
+        item.className = 'toast-item';
+        item.textContent = msg;
+        box.appendChild(item);
+        setTimeout(() => item.remove(), 2800);
+      }
+
+      function setFeedback(el, msg, isError) {
+        if (!el) return;
+        if (!msg) {
+          el.textContent = '';
+          el.className = 'feedback-msg hidden';
+          return;
+        }
+        el.textContent = msg;
+        el.className = `feedback-msg ${isError ? 'feedback-error' : 'feedback-ok'}`;
+      }
+
+      function getCurrentNeighbor() {
+        return state.neighbors.find((n) => n.id === state.currentUserId) || state.neighbors[0];
+      }
+
+      function findNeighborByName(name) {
+        const target = String(name || '').trim().toLowerCase();
+        if (!target) return null;
+        return state.neighbors.find((n) => String(n.name || '').trim().toLowerCase() === target) || null;
+      }
+
+      function getInitials(name) {
+        const clean = String(name || '').trim();
+        if (!clean) return 'VO';
+        const parts = clean.split(/\s+/);
+        return parts.length > 1
+          ? `${parts[0][0] || ''}${parts[1][0] || ''}`.toUpperCase()
+          : clean.slice(0, 2).toUpperCase();
+      }
+
+      function renderAvatarHtml(neighborOrName, sizeClass) {
+        const extra = sizeClass ? ` ${sizeClass}` : '';
+        const person = typeof neighborOrName === 'object' && neighborOrName !== null
+          ? neighborOrName
+          : findNeighborByName(neighborOrName);
+        const displayName = person ? person.name : String(neighborOrName || '');
+        const avatarUrl = person && person.avatarUrl ? person.avatarUrl : '';
+        if (avatarUrl) {
+          return `<img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(displayName)}" class="avatar-circle${extra}" />`;
+        }
+        return `<span class="avatar-circle${extra}" aria-hidden="true">${escapeHtml(getInitials(displayName))}</span>`;
+      }
+
+      function normalizeUrl(raw) {
+        let clean = String(raw || '').trim();
+        if (!clean) return '';
+        if (/^www\.\S+/i.test(clean)) {
+          clean = `https://${clean}`;
+        }
+        return clean;
+      }
+
+      function isSafeMediaSrc(raw) {
+        const clean = normalizeUrl(raw);
+        return /^https?:\/\/\S+/i.test(clean) || /^data:(audio|video)\//i.test(clean);
+      }
+
+      function isSafeUrl(raw) {
+        const clean = normalizeUrl(raw);
+        return /^https?:\/\/\S+/i.test(clean);
+      }
+
+      function isLikelyImageUrl(raw) {
+        const clean = normalizeUrl(raw);
+        return /^data:image\//i.test(clean) || /\.(png|jpe?g|gif|webp|bmp|svg|avif|ico)(\?.*)?$/i.test(clean);
+      }
+
+      function resolveMediaKind(mw) {
+        if (!mw || !mw.src) return 'audio';
+        if (mw.kind === 'video' || mw.kind === 'audio') return mw.kind;
+        const s = mw.src.toLowerCase();
+        if (s.startsWith('data:video/') || /\.(mp4|webm|ogv|mov|m4v)(\?.*)?$/i.test(s)) {
+          return 'video';
+        }
+        return 'audio';
+      }
+
+      function getActiveMediaElement() {
+        const kind = resolveMediaKind(state.mediaWidget);
+        return kind === 'video'
+          ? document.getElementById('left-media-video')
+          : document.getElementById('left-media-audio');
+      }
+
+      function bindAutoplayOnFirstGesture() {
+        if (autoplayRetryBound) return;
+        autoplayRetryBound = true;
+        const tryPlay = () => {
+          const mw = state.mediaWidget;
+          if (!mw || !mw.enabled || !mw.src || mw.dismissed) return;
+          const el = getActiveMediaElement();
+          if (!el || !el.paused) return;
+          el.muted = false;
+          el.volume = mw.volume;
+          el.play().then(() => {
+            updateMediaPlayerUi();
+          }).catch(() => {});
+        };
+        document.addEventListener('pointerdown', tryPlay, { once: true, passive: true });
+        document.addEventListener('keydown', tryPlay, { once: true, passive: true });
+      }
+
+      function triggerAutoplayForWidget(shouldAttemptPlay) {
+        const mw = state.mediaWidget;
+        const widget = document.getElementById('left-media-widget');
+        const videoEl = document.getElementById('left-media-video');
+        const audioEl = document.getElementById('left-media-audio');
+        const titleEl = document.getElementById('left-media-title');
+        const volInput = document.getElementById('left-media-volume');
+        const volLabel = document.getElementById('left-media-vol-label');
+        const bodyEl = document.getElementById('left-media-body');
+        const sizeBtn = document.getElementById('btn-media-size-toggle');
+        const compactBtn = document.getElementById('btn-media-compact-toggle');
+
+        if (!widget || !videoEl || !audioEl) return;
+
+        if (!mw || !mw.enabled || !mw.src || mw.dismissed) {
+          widget.classList.add('hidden');
+          videoEl.pause();
+          audioEl.pause();
+          return;
+        }
+
+        widget.classList.remove('hidden');
+        widget.classList.toggle('expanded', Boolean(mw.expanded && !mw.compact));
+        widget.classList.toggle('compact', Boolean(mw.compact));
+        if (bodyEl) bodyEl.classList.toggle('hidden', Boolean(mw.compact));
+        if (sizeBtn) sizeBtn.textContent = mw.expanded ? '🗗 Rapetisser' : '⛶ Grossir';
+        if (compactBtn) compactBtn.textContent = mw.compact ? '▢' : '–';
+
+        const kind = resolveMediaKind(mw);
+        const labelText = mw.title || (kind === 'video' ? '🎬 Clip vidéo' : '🎵 Musique');
+        if (titleEl) titleEl.textContent = `${kind === 'video' ? '🎬' : '🎵'} ${labelText}`;
+
+        const pct = Math.round((Number.isFinite(mw.volume) ? mw.volume : 0.65) * 100);
+        if (volInput) volInput.value = String(pct);
+        if (volLabel) volLabel.textContent = `${pct} %`;
+
+        if (kind === 'video') {
+          audioEl.pause();
+          audioEl.removeAttribute('src');
+          audioEl.classList.add('hidden');
+          videoEl.classList.remove('hidden');
+          if (videoEl.getAttribute('src') !== mw.src) {
+            videoEl.src = mw.src;
+          }
+          videoEl.volume = mw.volume;
+          videoEl.muted = false;
+        } else {
+          videoEl.pause();
+          videoEl.removeAttribute('src');
+          videoEl.classList.add('hidden');
+          audioEl.classList.remove('hidden');
+          if (audioEl.getAttribute('src') !== mw.src) {
+            audioEl.src = mw.src;
+          }
+          audioEl.volume = mw.volume;
+          audioEl.muted = false;
+        }
+
+        const activeEl = getActiveMediaElement();
+        const statusEl = document.getElementById('left-media-status');
+
+        if (shouldAttemptPlay && activeEl) {
+          const p = activeEl.play();
+          if (p && typeof p.then === 'function') {
+            p.then(() => {
+              if (statusEl) statusEl.textContent = 'En lecture avec le son';
+              updateMediaPlayerUi();
+            }).catch(() => {
+              if (statusEl) statusEl.textContent = 'Clique n’importe où pour lancer le son';
+              updateMediaPlayerUi();
+              bindAutoplayOnFirstGesture();
+            });
+          }
+        }
+        updateMediaPlayerUi();
+      }
+
+      function updateMediaPlayerUi() {
+        const playBtn = document.getElementById('btn-media-play-pause');
+        const statusEl = document.getElementById('left-media-status');
+        const activeEl = getActiveMediaElement();
+        if (!playBtn || !activeEl) return;
+        const isPlaying = !activeEl.paused && !activeEl.ended && activeEl.currentTime >= 0 && Boolean(state.mediaWidget.src);
+        playBtn.textContent = isPlaying ? '⏸ Pause' : '▶ Lecture';
+        if (statusEl && state.mediaWidget.enabled && state.mediaWidget.src) {
+          if (isPlaying) {
+            statusEl.textContent = 'En lecture avec le son';
+          } else if (activeEl.currentTime === 0) {
+            statusEl.textContent = 'Arrêté';
+          } else {
+            statusEl.textContent = 'En pause';
+          }
+        }
+      }
+
+      function openImageLightbox(src) {
+        if (!src) return;
+        const modal = document.getElementById('image-lightbox-modal');
+        const img = document.getElementById('lightbox-preview-img');
+        const openLink = document.getElementById('lightbox-open-tab-link');
+        const dlLink = document.getElementById('lightbox-download-link');
+        if (!modal || !img) return;
+        img.src = src;
+        if (openLink) openLink.href = src;
+        if (dlLink) {
+          dlLink.href = src;
+          dlLink.download = src.startsWith('data:image/png') ? 'photo-voisins.png' : 'photo-voisins.jpg';
+        }
+        modal.classList.remove('hidden');
+      }
+
+      function closeImageLightbox() {
+        const modal = document.getElementById('image-lightbox-modal');
+        const img = document.getElementById('lightbox-preview-img');
+        if (modal) modal.classList.add('hidden');
+        if (img) img.src = '';
+      }
+
+      function openExternalLinkSafe(rawUrl) {
+        const clean = normalizeUrl(rawUrl);
+        if (!isSafeUrl(clean)) return;
+        const win = window.open(clean, '_blank', 'noopener,noreferrer');
+        if (!win) {
+          const tempA = document.createElement('a');
+          tempA.href = clean;
+          tempA.target = '_blank';
+          tempA.rel = 'noopener noreferrer';
+          document.body.appendChild(tempA);
+          tempA.click();
+          tempA.remove();
+        }
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function formatFileSize(bytes) {
+        const b = Number(bytes || 0);
+        if (!b) return '';
+        if (b < 1024) return `${b} o`;
+        if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} Ko`;
+        return `${(b / (1024 * 1024)).toFixed(1)} Mo`;
+      }
+
+      function isTextReadableFile(file) {
+        const name = String((file && file.name) || '').toLowerCase();
+        const type = String((file && file.type) || '').toLowerCase();
+        return (
+          type.startsWith('text/') ||
+          /\.(txt|html|htm|css|js|json|csv|md|log|xml|svg)$/i.test(name)
+        );
+      }
+
+      function buildEmojiButtonsHtml() {
+        return EMOJI_CATALOG.map(
+          (em) => `<button type="button" class="emoji-btn insert-emoji-btn" data-emoji="${em}">${em}</button>`
+        ).join('');
+      }
+
+      function buildEmojiBars() {
+        const html = buildEmojiButtonsHtml();
+        document.querySelectorAll('.emoji-bar[data-target-input]').forEach((bar) => {
+          bar.innerHTML = html;
+        });
+      }
+
+      function buildBgGallery() {
+        const box = document.getElementById('admin-bg-gallery');
+        if (!box) return;
+        box.innerHTML = BG_GALLERY_ITEMS.map((item) => `
+          <button type="button" class="bg-thumb-card pick-bg-gallery-btn" data-bg-url="${escapeHtml(item.url)}">
+            <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.label)}" class="bg-thumb-img" loading="lazy" />
+            <span class="bg-thumb-label">${escapeHtml(item.label)}</span>
+          </button>
+        `).join('');
+      }
+
+      function getSelectedRsvpStatus() {
+        const checked = document.querySelector('input[name="rsvpStatus"]:checked');
+        const val = checked ? checked.value : 'yes';
+        return ['yes', 'maybe', 'no'].includes(val) ? val : 'yes';
+      }
+
+      function syncRsvpChoiceVisuals() {
+        const st = getSelectedRsvpStatus();
+        const lYes = document.getElementById('rsvp-label-yes');
+        const lMaybe = document.getElementById('rsvp-label-maybe');
+        const lNo = document.getElementById('rsvp-label-no');
+        const guestsWrap = document.getElementById('rsvp-guests-wrap');
+        const guestsInp = document.getElementById('rsvp-guests-input');
+
+        if (lYes) lYes.className = `rsvp-choice-card ${st === 'yes' ? 'selected-yes' : ''}`;
+        if (lMaybe) lMaybe.className = `rsvp-choice-card ${st === 'maybe' ? 'selected-maybe' : ''}`;
+        if (lNo) lNo.className = `rsvp-choice-card ${st === 'no' ? 'selected-no' : ''}`;
+
+        if (guestsWrap) {
+          guestsWrap.classList.toggle('hidden', st === 'no');
+        }
+        if (st === 'no' && guestsInp) {
+          guestsInp.value = '0';
+        }
+      }
+
+      function renderRsvpPublic() {
+        const statsEl = document.getElementById('rsvp-public-stats');
+        const listEl = document.getElementById('rsvp-public-list');
+        const nameInp = document.getElementById('rsvp-name-input');
+        const me = getCurrentNeighbor();
+
+        if (nameInp && rsvpNamePrefilledForId !== me.id) {
+          nameInp.value = me.name;
+          rsvpNamePrefilledForId = me.id;
+        }
+
+        const list = state.rsvpResponses || [];
+        const yesItems = list.filter((r) => r.status === 'yes');
+        const maybeItems = list.filter((r) => r.status === 'maybe');
+        const noItems = list.filter((r) => r.status === 'no');
+
+        const yesGuests = yesItems.reduce((acc, r) => acc + (Number(r.guests) || 0), 0);
+        const maybeGuests = maybeItems.reduce((acc, r) => acc + (Number(r.guests) || 0), 0);
+        const totalConfirmHeadcount = yesItems.length + yesGuests;
+
+        if (statsEl) {
+          statsEl.innerHTML = `
+            <div class="rsvp-stat-box">
+              <div class="rsvp-stat-num">${totalConfirmHeadcount}</div>
+              <div class="rsvp-stat-label">Participants confirmés (${yesItems.length} pers. + ${yesGuests} invité${yesGuests > 1 ? 's' : ''})</div>
+            </div>
+            <div class="rsvp-stat-box">
+              <div class="rsvp-stat-num">${maybeItems.length}</div>
+              <div class="rsvp-stat-label">Peut-être (${maybeGuests} invité${maybeGuests > 1 ? 's' : ''} max)</div>
+            </div>
+            <div class="rsvp-stat-box">
+              <div class="rsvp-stat-num">${noItems.length}</div>
+              <div class="rsvp-stat-label">Ne participent pas</div>
+            </div>
+            <div class="rsvp-stat-box">
+              <div class="rsvp-stat-num">${list.length}</div>
+              <div class="rsvp-stat-label">Réponses publiques enregistrées</div>
+            </div>
+          `;
+        }
+
+        if (!listEl) return;
+
+        if (!list.length) {
+          listEl.innerHTML = '<p style="margin:0; font-size:0.86rem; color:var(--text-muted);">Aucune réponse enregistrée pour le moment.</p>';
+          return;
+        }
+
+        listEl.innerHTML = list.map((item) => {
+          let badgeHtml = '<span class="rsvp-badge rsvp-badge-yes">✅ Oui, je participe</span>';
+          if (item.status === 'maybe') {
+            badgeHtml = '<span class="rsvp-badge rsvp-badge-maybe">🤔 Peut-être</span>';
+          } else if (item.status === 'no') {
+            badgeHtml = '<span class="rsvp-badge rsvp-badge-no">❌ Je ne participe pas</span>';
+          }
+
+          const guestText = item.status === 'no'
+            ? ''
+            : ` • <strong>${Number(item.guests) || 0}</strong> invité${(Number(item.guests) || 0) > 1 ? 's' : ''}`;
+
+          const repliesHtml = (item.replies || []).map((rep) => `
+            <div class="rsvp-reply-box">
+              <div>
+                <strong>${escapeHtml(rep.author)}</strong>
+                <span style="font-size:0.74rem; color:var(--text-muted); margin-left:0.35rem;">${escapeHtml(rep.time || '')}</span>
+              </div>
+              <div>${escapeHtml(rep.text)}</div>
+            </div>
+          `).join('');
+
+          return `
+            <div class="rsvp-entry-card">
+              <div class="post-top">
+                <div class="inline-row" style="gap: 0.5rem;">
+                  ${renderAvatarHtml(item.name, 'avatar-sm')}
+                  <div>
+                    <strong>${escapeHtml(item.name)}</strong>
+                    <span style="font-size:0.8rem; color:var(--text-muted);">${guestText}</span>
+                    <div style="font-size:0.74rem; color:var(--text-muted);">${escapeHtml(item.updatedAt || '')}</div>
+                  </div>
+                </div>
+                ${badgeHtml}
+              </div>
+
+              ${item.note ? `<p style="margin:0; font-size:0.9rem; white-space:pre-line;">${escapeHtml(item.note)}</p>` : ''}
+
+              ${repliesHtml ? `<div style="display:flex; flex-direction:column; gap:0.35rem; margin-top:0.15rem;">${repliesHtml}</div>` : ''}
+
+              <form class="inline-row rsvp-reply-form" data-rsvp-id="${escapeHtml(item.id)}" style="margin-top:0.2rem;">
+                <input type="text" class="input rsvp-reply-input" placeholder="Répondre à cette note ou question..." style="min-height:36px; padding:0.45rem 0.7rem; font-size:0.84rem;" />
+                <button type="submit" class="btn btn-ghost btn-sm">Répondre</button>
+              </form>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderDocCardHtml(docFile) {
+        if (!docFile || !docFile.dataUrl) return '';
+        const lowerName = String(docFile.name || '').toLowerCase();
+        const isPdf = lowerName.endsWith('.pdf') || docFile.mimeType === 'application/pdf';
+        const isHtml = lowerName.endsWith('.html') || lowerName.endsWith('.htm') || docFile.mimeType === 'text/html';
+        const sizeLabel = formatFileSize(docFile.size);
+
+        let extraHtml = '';
+        if (docFile.textPreview) {
+          extraHtml = `<div class="doc-text-preview">${escapeHtml(docFile.textPreview.slice(0, 1200))}</div>`;
+        } else if (isPdf) {
+          extraHtml = `<div class="field-safety-note">Document PDF (Adobe Reader / lecteur PDF intégré) : clique sur Ouvrir ou Télécharger.</div>`;
+        } else if (isHtml) {
+          extraHtml = `<div class="field-safety-note">Fichier page web (.html) : clique sur Ouvrir ou Télécharger.</div>`;
+        }
+
+        return `
+          <div class="doc-attach-card">
+            <div class="inline-row" style="justify-content: space-between;">
+              <div>
+                <strong>📄 ${escapeHtml(docFile.name)}</strong>
+                ${sizeLabel ? `<span style="font-size:0.78rem; color:var(--text-muted); margin-left:0.35rem;">(${escapeHtml(sizeLabel)})</span>` : ''}
+              </div>
+              <div class="inline-row">
+                <a href="${escapeHtml(docFile.dataUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">${isPdf ? 'Ouvrir (PDF)' : 'Ouvrir'}</a>
+                <a href="${escapeHtml(docFile.dataUrl)}" download="${escapeHtml(docFile.name)}" class="btn btn-primary btn-sm">Télécharger</a>
+              </div>
+            </div>
+            ${extraHtml}
+          </div>
+        `;
+      }
+
+      function renderMediaPreviewBox(boxEl, mediaObj) {
+        if (!boxEl) return;
+        const hasImg = Boolean(mediaObj.imageUrl);
+        const hasLink = Boolean(mediaObj.linkUrl);
+        const hasDoc = Boolean(mediaObj.docFile && mediaObj.docFile.dataUrl);
+        if (!hasImg && !hasLink && !hasDoc) {
+          boxEl.className = 'hidden';
+          boxEl.innerHTML = '';
+          return;
+        }
+        boxEl.className = '';
+        let html = '';
+        if (hasImg) {
+          html += `<img src="${escapeHtml(mediaObj.imageUrl)}" alt="Aperçu image" class="media-preview-img" />`;
+        }
+        if (hasDoc) {
+          html += renderDocCardHtml(mediaObj.docFile);
+        }
+        if (hasLink) {
+          const safeHref = normalizeUrl(mediaObj.linkUrl);
+          html += `<a href="${escapeHtml(safeHref)}" target="_blank" rel="noopener noreferrer" class="media-link-card">🔗 ${escapeHtml(safeHref)}</a>`;
+        }
+        boxEl.innerHTML = html;
+      }
+
+      function readImageFileToDataUrl(file, onDone, maxSize) {
+        if (!file || !file.type.startsWith('image/')) {
+          showToast('Choisis ou glisse un fichier image valide.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const rawUrl = String(reader.result || '');
+          const img = new Image();
+          img.onload = () => {
+            const maxDim = maxSize || 1100;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              const ratio = Math.min(maxDim / w, maxDim / h);
+              w = Math.round(w * ratio);
+              h = Math.round(h * ratio);
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, w, h);
+              const outType = file.type === 'image/png' || file.type === 'image/webp' ? file.type : 'image/jpeg';
+              onDone(canvas.toDataURL(outType, 0.85));
+              return;
+            }
+            onDone(rawUrl);
+          };
+          img.onerror = () => onDone(rawUrl);
+          img.src = rawUrl;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function readAnyDocumentFile(file, onDocReady) {
+        if (!file) return;
+        if (file.size > 4 * 1024 * 1024) {
+          showToast('Fichier un peu lourd (> 4 Mo) : garde-le sous 4 Mo pour la sauvegarde locale.');
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = String(reader.result || '');
+          const baseDoc = {
+            name: file.name || 'document',
+            mimeType: file.type || 'application/octet-stream',
+            size: file.size || 0,
+            dataUrl,
+            textPreview: ''
+          };
+          if (isTextReadableFile(file)) {
+            const textReader = new FileReader();
+            textReader.onload = () => {
+              baseDoc.textPreview = String(textReader.result || '').slice(0, 1500);
+              onDocReady(baseDoc);
+            };
+            textReader.onerror = () => onDocReady(baseDoc);
+            textReader.readAsText(file);
+          } else {
+            onDocReady(baseDoc);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function readMediaFileToDataUrl(file, onDone) {
+        if (!file) return;
+        if (file.size > 8 * 1024 * 1024) {
+          showToast('Gros fichier (> 8 Mo) : préfère un lien direct ou un fichier plus léger pour localStorage.');
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          onDone(String(reader.result || ''), file.name || '');
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function markConversationRead(meId, peerId) {
+        if (!meId || !peerId) return;
+        state.privateMessages.forEach((m) => {
+          if (m.fromId === peerId && m.toId === meId && m.read === false) {
+            m.read = true;
+          }
+        });
+      }
+
+      function applyTheme() {
+        const body = document.getElementById('page-body');
+        body.className = `preset-${state.preset || 'riviere'}`;
+        const alpha = Number.isFinite(Number(state.cardOpacity)) ? Number(state.cardOpacity) : 0.62;
+        document.documentElement.style.setProperty('--card-alpha', String(alpha));
+        document.documentElement.style.setProperty('--accent', state.accentColor || '#0284c7');
+
+        const opSlider = document.getElementById('admin-card-opacity');
+        const opLabel = document.getElementById('admin-opacity-value');
+        const pct = Math.round(alpha * 100);
+        if (opSlider) opSlider.value = String(pct);
+        if (opLabel) opLabel.textContent = `${pct} %`;
+
+        if (state.bgImage && (isSafeUrl(state.bgImage) || /^data:image\//i.test(state.bgImage))) {
+          body.style.backgroundImage = `linear-gradient(rgba(15,23,42,0.22), rgba(15,23,42,0.22)), url("${state.bgImage.replace(/"/g, '')}")`;
+        } else {
+          body.style.backgroundImage = '';
+        }
+        const pubBtn = document.getElementById('btn-publish-post');
+        if (pubBtn && state.publishButtonLabel) pubBtn.textContent = state.publishButtonLabel;
+      }
+
+      function renderAuthModes() {
+        const mode = state.authMode || 'login';
+        document.querySelectorAll('.auth-mode-btn').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.authMode === mode);
+        });
+        document.getElementById('auth-panel-login').classList.toggle('hidden', mode !== 'login');
+        document.getElementById('auth-panel-register').classList.toggle('hidden', mode !== 'register');
+        document.getElementById('auth-panel-admin').classList.toggle('hidden', mode !== 'admin');
+      }
+
+      function renderAccessAndTabs() {
+        const me = getCurrentNeighbor();
+        const pill = document.getElementById('neighbor-status-pill');
+        const lockNeighborBtn = document.getElementById('btn-lock-neighbor');
+        const gate = document.getElementById('neighbor-gate-section');
+        const app = document.getElementById('neighbor-app-section');
+
+        const canAccess = Boolean(state.neighborUnlocked || state.adminUnlocked);
+        pill.classList.toggle('hidden', !canAccess);
+        lockNeighborBtn.classList.toggle('hidden', !canAccess);
+        gate.classList.toggle('hidden', canAccess);
+        app.classList.toggle('hidden', !canAccess);
+
+        document.querySelectorAll('.main-nav-btn').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.tab === state.activeTab);
+        });
+
+        ['feed', 'pm', 'presence', 'profile', 'dossier'].forEach((t) => {
+          const el = document.getElementById(`tab-view-${t}`);
+          if (el) el.classList.toggle('hidden', state.activeTab !== t);
+        });
+
+        const unreadTotal = state.privateMessages.filter((m) => m.toId === me.id && m.read === false).length;
+        const myMsgCount = state.privateMessages.filter((m) => m.toId === me.id || m.fromId === me.id).length;
+
+        document.getElementById('nav-count-feed').textContent = String(state.posts.length);
+        document.getElementById('nav-count-pm').textContent = unreadTotal > 0 ? `${unreadTotal} non lu` : String(myMsgCount);
+        const onlineCount = state.neighbors.filter((n) => n.online).length;
+        document.getElementById('nav-count-presence').textContent = `${onlineCount}/${state.neighbors.length}`;
+        document.getElementById('nav-count-dossier').textContent = String(state.dossierPosts.length);
+      }
+
+      function renderHero() {
+        document.getElementById('hero-badge-display').textContent = state.hero.badge || DEFAULT_HERO.badge;
+        document.getElementById('hero-title-display').textContent = state.hero.title || DEFAULT_HERO.title;
+        document.getElementById('hero-motto-display').textContent = state.hero.motto || DEFAULT_HERO.motto;
+        document.getElementById('hero-desc-display').textContent = state.hero.description || DEFAULT_HERO.description;
+        document.getElementById('hero-schedule-display').textContent = state.hero.schedule || DEFAULT_HERO.schedule;
+      }
+
+      function renderSelectors() {
+        const me = getCurrentNeighbor();
+        const postAuthor = document.getElementById('post-author-select');
+        const dossierAuthor = document.getElementById('dossier-author-select');
+        const pmSender = document.getElementById('pm-sender-select');
+        const profileNameInput = document.getElementById('profile-name-input');
+        const profileAvatarPreview = document.getElementById('profile-avatar-preview');
+        const profileAvatarUrlInput = document.getElementById('profile-avatar-url');
+
+        const optionsHtml = state.neighbors
+          .map((n) => `<option value="${escapeHtml(n.id)}" ${n.id === me.id ? 'selected' : ''}>${escapeHtml(n.name)}</option>`)
+          .join('');
+
+        pmSender.innerHTML = optionsHtml;
+
+        const authorOptionsHtml = state.neighbors
+          .map((n) => `<option value="${escapeHtml(n.name)}" ${n.id === me.id ? 'selected' : ''}>${escapeHtml(n.name)}</option>`)
+          .join('');
+
+        postAuthor.innerHTML = authorOptionsHtml;
+        dossierAuthor.innerHTML = authorOptionsHtml;
+
+        const others = state.neighbors.filter((n) => n.id !== me.id);
+        if (!others.some((n) => n.id === state.pmRecipientId) && others[0]) {
+          state.pmRecipientId = others[0].id;
+        }
+
+        if (draftAvatarInitializedForId !== me.id) {
+          draftAvatarUrl = me.avatarUrl || '';
+          draftAvatarInitializedForId = me.id;
+        }
+        profileNameInput.value = me.name;
+        profileAvatarUrlInput.value = isSafeUrl(draftAvatarUrl) ? draftAvatarUrl : '';
+        profileAvatarPreview.innerHTML = renderAvatarHtml({ name: me.name, avatarUrl: draftAvatarUrl }, 'avatar-lg');
+      }
+
+      function renderAttachmentHtml(item) {
+        let out = '';
+        if (item.imageUrl) {
+          out += `<img src="${escapeHtml(item.imageUrl)}" alt="Image partagée" class="media-preview-img" title="Cliquer pour agrandir" />`;
+        }
+        if (item.docFile && item.docFile.dataUrl) {
+          out += renderDocCardHtml(item.docFile);
+        }
+        const safeLink = normalizeUrl(item.linkUrl);
+        if (safeLink && isSafeUrl(safeLink)) {
+          out += `<a href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer" class="media-link-card" data-open-link="${escapeHtml(safeLink)}">🌐 Ouvrir le lien : ${escapeHtml(safeLink)}</a>`;
+        }
+        return out;
+      }
+
+      function renderCategoryBadgeHtml(cat) {
+        if (cat === 'suggestion') {
+          return '<span class="cat-badge cat-suggestion">💡 Suggestion</span>';
+        }
+        if (cat === 'plainte') {
+          return '<span class="cat-badge cat-plainte">⚠️ Plainte</span>';
+        }
+        return '<span class="cat-badge cat-general">📌 Général</span>';
+      }
+
+      function renderCommentDraftPreviewHtml(draft) {
+        if (!draft) return '';
+        const parts = [];
+        if (draft.imageUrl) {
+          parts.push(`<img src="${escapeHtml(draft.imageUrl)}" alt="Aperçu image commentaire" class="media-preview-img" />`);
+        }
+        if (draft.docFile && draft.docFile.dataUrl) {
+          parts.push(renderDocCardHtml(draft.docFile));
+        }
+        const safeLink = normalizeUrl(draft.linkUrl);
+        if (safeLink) {
+          parts.push(`<a href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer" class="media-link-card" data-open-link="${escapeHtml(safeLink)}">🔗 ${escapeHtml(safeLink)}</a>`);
+        }
+        return parts.join('');
+      }
+
+      function renderWallList(listEl, postsArray, boardKey, emptyMessage) {
+        if (!listEl) return;
+
+        if (!postsArray.length) {
+          listEl.innerHTML = `<div class="card"><p style="margin:0; color:var(--text-muted);">${escapeHtml(emptyMessage)}</p></div>`;
+          return;
+        }
+
+        const quickReactions = ['👍', '❤️', '😂', '😮', '😢', '😡', '🌽', '💧', '🔧', '🔥', '🎣', '🙌'];
+        const allEmojisHtml = buildEmojiButtonsHtml();
+
+        listEl.innerHTML = postsArray.map((post) => {
+          const commentsHtml = (post.comments || []).map((c) => `
+            <div class="comment-item">
+              <div class="inline-row" style="gap: 0.45rem;">
+                ${renderAvatarHtml(c.author, 'avatar-sm')}
+                <span><strong>${escapeHtml(c.author)} :</strong> ${escapeHtml(c.text)}</span>
+              </div>
+              ${renderAttachmentHtml(c)}
+            </div>
+          `).join('');
+
+          const reactionBtns = quickReactions.map((em) => {
+            const count = (post.reactions && post.reactions[em]) || 0;
+            return `<button type="button" class="emoji-btn react-post-btn" data-board="${escapeHtml(boardKey)}" data-post-id="${escapeHtml(post.id)}" data-emoji="${em}">${em}${count ? ` ${count}` : ''}</button>`;
+          }).join('');
+
+          const commentInputId = `${boardKey}-comment-input-${post.id}`;
+          const drawerKey = `${boardKey}:${post.id}`;
+          const emojiDrawerOpen = openCommentEmojiKeys.has(drawerKey);
+          const attachDrawerOpen = openCommentAttachKeys.has(drawerKey);
+          const draft = getCommentDraft(drawerKey);
+          const draftPreviewHtml = renderCommentDraftPreviewHtml(draft);
+          const badgeHtml = boardKey === 'dossier' ? renderCategoryBadgeHtml(post.category) : '';
+
+          return `
+            <article class="card">
+              <div class="post-top">
+                <div class="inline-row" style="gap: 0.55rem;">
+                  ${renderAvatarHtml(post.author)}
+                  <div>
+                    <strong>${escapeHtml(post.author)}</strong>
+                    <div style="font-size:0.78rem; color:var(--text-muted);">${escapeHtml(post.createdAt || '')}</div>
+                  </div>
+                </div>
+                ${badgeHtml}
+              </div>
+              <p style="margin: 0.65rem 0 0; white-space: pre-line;">${escapeHtml(post.content)}</p>
+              ${renderAttachmentHtml(post)}
+              <div class="emoji-bar" style="max-height: 44px; overflow-y: visible; background: transparent; border: none; padding: 0;">${reactionBtns}</div>
+              <div class="comments-box">
+                ${commentsHtml}
+                <form class="inline-row comment-form" data-board="${escapeHtml(boardKey)}" data-post-id="${escapeHtml(post.id)}">
+                  <input id="${escapeHtml(commentInputId)}" type="text" class="input comment-input" placeholder="Écrire un commentaire..." />
+                  <button type="button" class="btn btn-ghost btn-sm toggle-comment-attach-btn" data-board="${escapeHtml(boardKey)}" data-post-id="${escapeHtml(post.id)}">📎 Fichier / Lien</button>
+                  <button type="button" class="btn btn-ghost btn-sm toggle-comment-emoji-btn" data-board="${escapeHtml(boardKey)}" data-post-id="${escapeHtml(post.id)}">😊 Émojis</button>
+                  <button type="submit" class="btn btn-ghost">Commenter</button>
+                </form>
+
+                <div class="comment-attach-drawer ${attachDrawerOpen ? '' : 'hidden'}">
+                  <div style="font-size: 0.78rem; font-weight: 700;">
+                    Joindre une image, un document (.pdf, .txt, .html, etc.) ou un lien au commentaire :
+                  </div>
+                  <div class="inline-row">
+                    <input type="file" accept="image/*,.pdf,.txt,.html,.htm,.csv,.json,.md,.log,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.7z" class="input comment-file-input" data-drawer-key="${escapeHtml(drawerKey)}" style="max-width: 240px; padding: 0.3rem; min-height: 36px; font-size: 0.82rem;" />
+                    <input type="url" class="input comment-link-input" data-drawer-key="${escapeHtml(drawerKey)}" value="${escapeHtml(draft.linkUrl || '')}" placeholder="https://... (lien ou image)" style="min-height: 36px; padding: 0.45rem 0.65rem; font-size: 0.85rem;" />
+                    <button type="button" class="btn btn-ghost btn-sm apply-comment-link-btn" data-drawer-key="${escapeHtml(drawerKey)}">Appliquer lien</button>
+                    <button type="button" class="btn btn-ghost btn-sm clear-comment-media-btn" data-drawer-key="${escapeHtml(drawerKey)}">Retirer</button>
+                  </div>
+                  ${draftPreviewHtml ? `<div>${draftPreviewHtml}</div>` : ''}
+                </div>
+
+                <div class="comment-emoji-drawer ${emojiDrawerOpen ? '' : 'hidden'}">
+                  <span class="label" style="margin-bottom: 0.2rem;">Émojis rapides pour commentaire</span>
+                  <div class="emoji-bar" data-target-input="${escapeHtml(commentInputId)}">${allEmojisHtml}</div>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function renderPosts() {
+        document.querySelectorAll('.filter-chip-btn').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.dossierFilter === state.dossierFilter);
+        });
+
+        const filteredDossier = state.dossierFilter === 'all'
+          ? state.dossierPosts
+          : state.dossierPosts.filter((p) => (p.category || 'general') === state.dossierFilter);
+
+        renderWallList(
+          document.getElementById('posts-list'),
+          state.posts,
+          'feed',
+          'Aucune publication sur le fil pour le moment.'
+        );
+        renderWallList(
+          document.getElementById('dossier-posts-list'),
+          filteredDossier,
+          'dossier',
+          state.dossierFilter === 'all'
+            ? "Aucune entrée dans Le dossier d'en bas pour le moment. Écris le premier message ci-dessus !"
+            : "Aucune entrée dans cette catégorie pour le moment."
+        );
+      }
+
+      function renderInboxAndMessages() {
+        const me = getCurrentNeighbor();
+        const inboxListEl = document.getElementById('pm-inbox-list');
+        const headerEl = document.getElementById('pm-thread-header');
+        const thread = document.getElementById('pm-thread');
+        const others = state.neighbors.filter((n) => n.id !== me.id);
+
+        if (!others.length) {
+          inboxListEl.innerHTML = '<p style="margin:0; font-size:0.84rem; color:var(--text-muted);">Aucun autre voisin inscrit.</p>';
+          headerEl.innerHTML = '<strong>Boîte de réception vide</strong>';
+          thread.innerHTML = '<p style="margin:0; color:var(--text-muted);">Inscris un autre voisin pour démarrer une discussion.</p>';
+          return;
+        }
+
+        const peer = others.find((n) => n.id === state.pmRecipientId) || others[0];
+        state.pmRecipientId = peer.id;
+
+        const sortedPeers = [...others].sort((a, b) => {
+          const unreadA = state.privateMessages.filter((m) => m.fromId === a.id && m.toId === me.id && m.read === false).length;
+          const unreadB = state.privateMessages.filter((m) => m.fromId === b.id && m.toId === me.id && m.read === false).length;
+          if (unreadA !== unreadB) return unreadB - unreadA;
+          const convA = state.privateMessages.filter((m) => (m.fromId === me.id && m.toId === a.id) || (m.fromId === a.id && m.toId === me.id));
+          const convB = state.privateMessages.filter((m) => (m.fromId === me.id && m.toId === b.id) || (m.fromId === b.id && m.toId === me.id));
+          return convB.length - convA.length;
+        });
+
+        inboxListEl.innerHTML = sortedPeers.map((other) => {
+          const conv = state.privateMessages.filter(
+            (m) => (m.fromId === me.id && m.toId === other.id) || (m.fromId === other.id && m.toId === me.id)
+          );
+          const lastMsg = conv[conv.length - 1];
+          const unreadCount = state.privateMessages.filter(
+            (m) => m.fromId === other.id && m.toId === me.id && m.read === false
+          ).length;
+
+          let previewText = 'Aucun message — cliquer pour écrire';
+          if (lastMsg) {
+            const prefix = lastMsg.fromId === me.id ? 'Vous : ' : '';
+            if (lastMsg.text) {
+              previewText = `${prefix}${lastMsg.text}`;
+            } else if (lastMsg.imageUrl) {
+              previewText = `${prefix}📷 Image`;
+            } else if (lastMsg.linkUrl) {
+              previewText = `${prefix}🔗 Lien`;
+            }
+          }
+
+          const isSelected = other.id === peer.id;
+          return `
+            <button
+              type="button"
+              class="inbox-item ${isSelected ? 'active' : ''} ${unreadCount > 0 ? 'has-unread' : ''}"
+              data-peer-id="${escapeHtml(other.id)}"
+            >
+              ${renderAvatarHtml(other)}
+              <div class="inbox-item-body">
+                <div class="inbox-item-top">
+                  <span class="inbox-item-name">${escapeHtml(other.name)}</span>
+                  ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
+                </div>
+                <div class="inbox-item-preview">${escapeHtml(previewText)}</div>
+              </div>
+            </button>
+          `;
+        }).join('');
+
+        headerEl.innerHTML = `
+          <div class="inline-row" style="gap: 0.55rem;">
+            ${renderAvatarHtml(peer)}
+            <div>
+              <strong style="font-size: 0.96rem;">${escapeHtml(peer.name)}</strong>
+              <div style="font-size: 0.76rem; color: var(--text-muted);">
+                ${peer.online ? '🟢 Actif maintenant' : '⚪ Hors ligne'}
+              </div>
+            </div>
+          </div>
+          <button type="button" id="btn-clear-conv" class="btn btn-ghost btn-sm">Effacer la conversation</button>
+        `;
+
+        const conv = state.privateMessages.filter(
+          (m) => (m.fromId === me.id && m.toId === peer.id) || (m.fromId === peer.id && m.toId === me.id)
+        );
+
+        if (!conv.length) {
+          thread.innerHTML = `<p style="margin:0; color:var(--text-muted);">Aucun message avec ${escapeHtml(peer.name)} pour l'instant. Dis-lui bonjour ci-dessous !</p>`;
+          return;
+        }
+
+        thread.innerHTML = conv.map((m, idx) => {
+          const mine = m.fromId === me.id;
+          const senderObj = mine ? me : peer;
+          const isLastMine = mine && idx === conv.length - 1;
+          return `
+            <div class="pm-msg-row ${mine ? 'mine' : 'theirs'}">
+              ${renderAvatarHtml(senderObj, 'avatar-sm')}
+              <div>
+                <div class="pm-bubble">
+                  ${m.text ? `<div>${escapeHtml(m.text)}</div>` : ''}
+                  ${renderAttachmentHtml(m)}
+                </div>
+                <div class="pm-meta-line">
+                  ${escapeHtml(m.time || '')}${isLastMine ? ' • Envoyé' : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+        thread.scrollTop = thread.scrollHeight;
+      }
+
+      function renderPresence() {
+        const me = getCurrentNeighbor();
+        const roster = document.getElementById('neighbor-roster');
+        roster.innerHTML = state.neighbors.map((n) => {
+          const isMe = n.id === me.id;
+          const unreadFromPeer = !isMe
+            ? state.privateMessages.filter((m) => m.fromId === n.id && m.toId === me.id && m.read === false).length
+            : 0;
+          return `
+            <div class="roster-item">
+              <div class="inline-row">
+                <span class="presence-dot ${n.online ? 'online' : 'offline'}"></span>
+                ${renderAvatarHtml(n)}
+                <strong>${escapeHtml(n.name)}</strong>
+                <span style="font-size:0.8rem; color:var(--text-muted);">${n.online ? 'En ligne' : 'Hors ligne'}</span>
+                ${unreadFromPeer > 0 ? `<span class="unread-badge">${unreadFromPeer} non lu</span>` : ''}
+              </div>
+              <div class="inline-row">
+                ${isMe
+                  ? `<button type="button" class="btn btn-ghost toggle-online-btn" data-id="${escapeHtml(n.id)}">Changer statut</button>`
+                  : `<button type="button" class="btn btn-primary open-pm-btn" data-id="${escapeHtml(n.id)}">Écrire</button>`
+                }
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderAdminPendingRegistrations() {
+        const box = document.getElementById('admin-pending-registrations');
+        if (!box) return;
+        const pending = state.pendingRegistrations || [];
+        if (!pending.length) {
+          box.innerHTML = '<p style="margin:0; font-size:0.84rem; color:var(--text-muted);">Aucune demande d\'inscription en attente.</p>';
+          return;
+        }
+        box.innerHTML = pending.map((req) => `
+          <div class="roster-item">
+            <div>
+              <strong>${escapeHtml(req.name)}</strong>
+              <div style="font-size:0.78rem; color:var(--text-muted);">Demandé : ${escapeHtml(req.createdAt || "À l'instant")}</div>
+            </div>
+            <div class="inline-row">
+              <button type="button" class="btn btn-secondary btn-sm admin-approve-reg-btn" data-req-id="${escapeHtml(req.id)}">Confirmer</button>
+              <button type="button" class="btn btn-danger btn-sm admin-reject-reg-btn" data-req-id="${escapeHtml(req.id)}">Refuser</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function renderAdminProfilesList() {
+        const box = document.getElementById('admin-profiles-list');
+        if (!box) return;
+        box.innerHTML = state.neighbors.map((n) => {
+          const canDelete = state.neighbors.length > 1;
+          return `
+            <div class="roster-item">
+              <div class="inline-row">
+                ${renderAvatarHtml(n, 'avatar-sm')}
+                <strong>${escapeHtml(n.name)}</strong>
+              </div>
+              <button
+                type="button"
+                class="btn btn-danger admin-delete-profile-btn"
+                data-id="${escapeHtml(n.id)}"
+                ${canDelete ? '' : 'disabled'}
+              >
+                Supprimer le profil
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderAdminPanel() {
+        document.getElementById('admin-login-view').classList.toggle('hidden', state.adminUnlocked);
+        document.getElementById('admin-controls-view').classList.toggle('hidden', !state.adminUnlocked);
+        document.getElementById('btn-lock-admin').classList.toggle('hidden', !state.adminUnlocked);
+        document.getElementById('btn-repair-all').classList.toggle('hidden', !state.adminUnlocked);
+
+        if (!state.adminUnlocked) return;
+
+        renderAdminPendingRegistrations();
+        document.getElementById('admin-bg-url').value = /^https?:\/\//i.test(state.bgImage || '') ? state.bgImage : '';
+        document.getElementById('admin-accent-color').value = state.accentColor || '#0284c7';
+        document.getElementById('admin-publish-label').value = state.publishButtonLabel || 'Publier sur le mur';
+        document.getElementById('admin-hero-title').value = state.hero.title || '';
+        document.getElementById('admin-hero-motto').value = state.hero.motto || '';
+        document.getElementById('admin-hero-desc').value = state.hero.description || '';
+        document.getElementById('admin-hero-schedule').value = state.hero.schedule || '';
+
+        const mw = state.mediaWidget || {};
+        document.getElementById('admin-media-title').value = draftMediaWidget.title || mw.title || '';
+        document.getElementById('admin-media-kind').value = draftMediaWidget.kind || mw.kind || 'auto';
+        const srcCandidate = draftMediaWidget.src || mw.src || '';
+        document.getElementById('admin-media-url').value = isSafeUrl(srcCandidate) ? srcCandidate : '';
+
+        renderAdminProfilesList();
+
+        const exportObj = {
+          preset: state.preset,
+          cardOpacity: state.cardOpacity,
+          bgImage: state.bgImage,
+          accentColor: state.accentColor,
+          publishButtonLabel: state.publishButtonLabel,
+          hero: state.hero,
+          rsvpResponses: state.rsvpResponses,
+          mediaWidget: state.mediaWidget,
+          neighbors: state.neighbors,
+          pendingRegistrations: state.pendingRegistrations,
+          posts: state.posts,
+          dossierPosts: state.dossierPosts
+        };
+        document.getElementById('admin-live-config-json').value = JSON.stringify(exportObj, null, 2);
+      }
+
+      function renderAll(shouldAttemptAutoplay) {
+        applyTheme();
+        renderAuthModes();
+        renderAccessAndTabs();
+        renderHero();
+        renderSelectors();
+        syncRsvpChoiceVisuals();
+        renderRsvpPublic();
+        renderPosts();
+        renderInboxAndMessages();
+        renderPresence();
+        renderAdminPanel();
+        renderMediaPreviewBox(document.getElementById('post-media-preview-box'), draftPostMedia);
+        renderMediaPreviewBox(document.getElementById('dossier-media-preview-box'), draftDossierMedia);
+        renderMediaPreviewBox(document.getElementById('pm-media-preview-box'), draftPmMedia);
+        triggerAutoplayForWidget(Boolean(shouldAttemptAutoplay));
+      }
+
+      function isValidNeighborCodeForProfile(neighbor, rawCode) {
+        const clean = String(rawCode || '').trim();
+        if (!clean) return false;
+        const digest = computeDigest(clean);
+        if (!digest) return false;
+        if (neighbor && neighbor.passwordDigest) {
+          return digest === neighbor.passwordDigest || digest === state.adminDigest;
+        }
+        return (
+          digest === BUILTIN_ACCESS_DIGEST ||
+          digest === state.adminDigest ||
+          digest === state.neighborDigest
+        );
+      }
+
+      function isValidAdminCode(rawCode) {
+        const clean = String(rawCode || '').trim();
+        if (!clean) return false;
+        const digest = computeDigest(clean);
+        return Boolean(
+          digest &&
+          (digest === BUILTIN_ACCESS_DIGEST || digest === state.adminDigest)
+        );
+      }
+
+      function attachImageDropzone(zoneEl, fileInputEl, onImageLoaded) {
+        if (!zoneEl) return;
+        ['dragenter', 'dragover'].forEach((evName) => {
+          zoneEl.addEventListener(evName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            zoneEl.classList.add('drag-over');
+          });
+        });
+        ['dragleave', 'drop'].forEach((evName) => {
+          zoneEl.addEventListener(evName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            zoneEl.classList.remove('drag-over');
+          });
+        });
+        zoneEl.addEventListener('drop', (e) => {
+          const files = e.dataTransfer && e.dataTransfer.files;
+          if (files && files[0]) {
+            readImageFileToDataUrl(files[0], onImageLoaded, 1100);
+            return;
+          }
+          const textData = e.dataTransfer && e.dataTransfer.getData('text/plain');
+          if (textData && isSafeUrl(textData)) {
+            onImageLoaded(normalizeUrl(textData));
+          }
+        });
+        if (fileInputEl) {
+          fileInputEl.addEventListener('change', (e) => {
+            const f = e.target.files && e.target.files[0];
+            if (f) readImageFileToDataUrl(f, onImageLoaded, 1100);
+          });
+        }
+      }
+
+      function attachDossierDropzone(zoneEl, fileInputEl) {
+        if (!zoneEl) return;
+        ['dragenter', 'dragover'].forEach((evName) => {
+          zoneEl.addEventListener(evName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            zoneEl.classList.add('drag-over');
+          });
+        });
+        ['dragleave', 'drop'].forEach((evName) => {
+          zoneEl.addEventListener(evName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            zoneEl.classList.remove('drag-over');
+          });
+        });
+        const handleFile = (f) => {
+          if (!f) return;
+          if (f.type && f.type.startsWith('image/')) {
+            readImageFileToDataUrl(f, (dataUrl) => {
+              draftDossierMedia.imageUrl = dataUrl;
+              renderMediaPreviewBox(document.getElementById('dossier-media-preview-box'), draftDossierMedia);
+              showToast('Image ajoutée au dossier.');
+            }, 1100);
+          } else {
+            readAnyDocumentFile(f, (docObj) => {
+              draftDossierMedia.docFile = docObj;
+              renderMediaPreviewBox(document.getElementById('dossier-media-preview-box'), draftDossierMedia);
+              showToast(`Fichier joint : ${docObj.name}`);
+            });
+          }
+        };
+        zoneEl.addEventListener('drop', (e) => {
+          const files = e.dataTransfer && e.dataTransfer.files;
+          if (files && files[0]) {
+            handleFile(files[0]);
+            return;
+          }
+          const textData = e.dataTransfer && e.dataTransfer.getData('text/plain');
+          if (textData && isSafeUrl(textData)) {
+            const cleanUrl = normalizeUrl(textData);
+            if (isLikelyImageUrl(cleanUrl)) draftDossierMedia.imageUrl = cleanUrl;
+            draftDossierMedia.linkUrl = cleanUrl;
+            document.getElementById('dossier-link-input').value = cleanUrl;
+            renderMediaPreviewBox(document.getElementById('dossier-media-preview-box'), draftDossierMedia);
+            showToast('Lien ajouté au dossier.');
+          }
+        });
+        if (fileInputEl) {
+          fileInputEl.addEventListener('change', (e) => {
+            const f = e.target.files && e.target.files[0];
+            if (f) handleFile(f);
+          });
+        }
+      }
+
+      document.querySelectorAll('input[name="rsvpStatus"]').forEach((radio) => {
+        radio.addEventListener('change', syncRsvpChoiceVisuals);
+      });
+
+      document.getElementById('rsvp-submit-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const feedbackEl = document.getElementById('rsvp-feedback');
+        const me = getCurrentNeighbor();
+        const nameVal = document.getElementById('rsvp-name-input').value.trim() || me.name;
+        const statusVal = getSelectedRsvpStatus();
+        const rawGuests = Number(document.getElementById('rsvp-guests-input').value || 0);
+        const guestsVal = statusVal === 'no'
+          ? 0
+          : (Number.isFinite(rawGuests) && rawGuests >= 0 ? Math.min(30, Math.floor(rawGuests)) : 0);
+        const noteVal = document.getElementById('rsvp-note-input').value.trim();
+
+        const existingIdx = (state.rsvpResponses || []).findIndex(
+          (r) => String(r.name || '').trim().toLowerCase() === nameVal.toLowerCase()
+        );
+
+        if (existingIdx >= 0) {
+          const prev = state.rsvpResponses[existingIdx];
+          state.rsvpResponses[existingIdx] = {
+            ...prev,
+            name: nameVal,
+            status: statusVal,
+            guests: guestsVal,
+            note: noteVal !== '' ? noteVal : prev.note,
+            updatedAt: "À l'instant (mis à jour)"
+          };
+        } else {
+          state.rsvpResponses.unshift({
+            id: `rsvp-${Date.now()}`,
+            name: nameVal,
+            status: statusVal,
+            guests: guestsVal,
+            note: noteVal,
+            updatedAt: "À l'instant",
+            replies: []
+          });
+        }
+
+        document.getElementById('rsvp-note-input').value = '';
+        saveState();
+        renderRsvpPublic();
+        setFeedback(feedbackEl, `Réponse enregistrée pour « ${nameVal} ».`, false);
+        showToast('Participation mise à jour.');
+      });
+
+      document.getElementById('rsvp-public-list').addEventListener('submit', (e) => {
+        const form = e.target.closest('.rsvp-reply-form');
+        if (!form) return;
+        e.preventDefault();
+        const rsvpId = form.dataset.rsvpId;
+        const inp = form.querySelector('.rsvp-reply-input');
+        const replyText = (inp && inp.value || '').trim();
+        if (!replyText) return;
+
+        const targetItem = (state.rsvpResponses || []).find((r) => r.id === rsvpId);
+        if (!targetItem) return;
+        const me = getCurrentNeighbor();
+        targetItem.replies = targetItem.replies || [];
+        targetItem.replies.push({
+          id: `rep-${Date.now()}`,
+          author: me.name,
+          text: replyText,
+          time: "À l'instant"
+        });
+        saveState();
+        renderRsvpPublic();
+        showToast('Réponse ajoutée.');
+      });
+
+      document.getElementById('btn-media-play-pause').addEventListener('click', () => {
+        const activeEl = getActiveMediaElement();
+        if (!activeEl || !state.mediaWidget.src) return;
+        if (activeEl.paused) {
+          activeEl.muted = false;
+          activeEl.volume = state.mediaWidget.volume;
+          activeEl.play().then(() => updateMediaPlayerUi()).catch(() => {});
+        } else {
+          activeEl.pause();
+          updateMediaPlayerUi();
+        }
+      });
+
+      document.getElementById('btn-media-stop').addEventListener('click', () => {
+        const activeEl = getActiveMediaElement();
+        if (!activeEl) return;
+        activeEl.pause();
+        try {
+          activeEl.currentTime = 0;
+        } catch (_e) {}
+        updateMediaPlayerUi();
+      });
+
+      document.getElementById('left-media-volume').addEventListener('input', (e) => {
+        const pct = Math.min(100, Math.max(0, Number(e.target.value || 65)));
+        const vol = pct / 100;
+        state.mediaWidget.volume = vol;
+        document.getElementById('left-media-vol-label').textContent = `${pct} %`;
+        const vEl = document.getElementById('left-media-video');
+        const aEl = document.getElementById('left-media-audio');
+        if (vEl) { vEl.volume = vol; vEl.muted = false; }
+        if (aEl) { aEl.volume = vol; aEl.muted = false; }
+      });
+
+      document.getElementById('left-media-volume').addEventListener('change', () => {
+        saveState();
+      });
+
+      document.getElementById('btn-media-size-toggle').addEventListener('click', () => {
+        state.mediaWidget.compact = false;
+        state.mediaWidget.expanded = !state.mediaWidget.expanded;
+        saveState();
+        triggerAutoplayForWidget(false);
+      });
+
+      document.getElementById('btn-media-compact-toggle').addEventListener('click', () => {
+        state.mediaWidget.compact = !state.mediaWidget.compact;
+        if (state.mediaWidget.compact) state.mediaWidget.expanded = false;
+        saveState();
+        triggerAutoplayForWidget(false);
+      });
+
+      document.getElementById('btn-media-close').addEventListener('click', () => {
+        state.mediaWidget.dismissed = true;
+        const vEl = document.getElementById('left-media-video');
+        const aEl = document.getElementById('left-media-audio');
+        if (vEl) vEl.pause();
+        if (aEl) aEl.pause();
+        document.getElementById('left-media-widget').classList.add('hidden');
+      });
+
+      ['left-media-video', 'left-media-audio'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('play', updateMediaPlayerUi);
+        el.addEventListener('pause', updateMediaPlayerUi);
+      });
+
+      document.getElementById('admin-media-file').addEventListener('change', (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        readMediaFileToDataUrl(f, (dataUrl, fileName) => {
+          draftMediaWidget.src = dataUrl;
+          const titleInp = document.getElementById('admin-media-title');
+          if (titleInp && !titleInp.value.trim()) {
+            titleInp.value = fileName.replace(/\.[^.]+$/, '');
+          }
+          draftMediaWidget.title = titleInp ? titleInp.value.trim() : fileName;
+          const kindSel = document.getElementById('admin-media-kind');
+          if (kindSel && kindSel.value === 'auto') {
+            if ((f.type && f.type.startsWith('video/')) || /\.(mp4|webm|mov)$/i.test(fileName)) {
+              kindSel.value = 'video';
+              draftMediaWidget.kind = 'video';
+            } else {
+              kindSel.value = 'audio';
+              draftMediaWidget.kind = 'audio';
+            }
+          }
+          setFeedback(document.getElementById('admin-media-feedback'), `Fichier chargé : ${fileName} — clique sur Activer & sauvegarder.`, false);
+          showToast('Fichier média chargé.');
+        });
+      });
+
+      document.getElementById('btn-apply-media-url').addEventListener('click', () => {
+        const raw = normalizeUrl(document.getElementById('admin-media-url').value);
+        if (!isSafeUrl(raw)) {
+          setFeedback(document.getElementById('admin-media-feedback'), 'Entre un lien valide (https://...).', true);
+          return;
+        }
+        document.getElementById('admin-media-url').value = raw;
+        draftMediaWidget.src = raw;
+        setFeedback(document.getElementById('admin-media-feedback'), 'Lien média prêt — clique sur Activer & sauvegarder.', false);
+      });
+
+      document.getElementById('btn-save-media-widget').addEventListener('click', () => {
+        const titleVal = document.getElementById('admin-media-title').value.trim();
+        const kindVal = document.getElementById('admin-media-kind').value || 'auto';
+        const urlVal = normalizeUrl(document.getElementById('admin-media-url').value);
+        const finalSrc = isSafeUrl(urlVal) ? urlVal : draftMediaWidget.src;
+
+        if (!finalSrc || !isSafeMediaSrc(finalSrc)) {
+          setFeedback(document.getElementById('admin-media-feedback'), 'Choisis un fichier (FLAC, MP3, MP4) ou entre un lien https:// valide.', true);
+          return;
+        }
+
+        state.mediaWidget = {
+          enabled: true,
+          title: titleVal || 'Piste / Clip',
+          kind: kindVal,
+          src: finalSrc,
+          volume: Number.isFinite(state.mediaWidget.volume) ? state.mediaWidget.volume : 0.65,
+          expanded: Boolean(state.mediaWidget.expanded),
+          compact: false,
+          dismissed: false
+        };
+        draftMediaWidget = { title: state.mediaWidget.title, kind: state.mediaWidget.kind, src: state.mediaWidget.src };
+        saveState();
+        triggerAutoplayForWidget(true);
+        setFeedback(document.getElementById('admin-media-feedback'), 'Média activé et sauvegardé — lecteur affiché à gauche.', false);
+        showToast('Lecteur musique/vidéo activé à gauche.');
+      });
+
+      document.getElementById('btn-clear-media-widget').addEventListener('click', () => {
+        state.mediaWidget = normalizeMediaWidget({ volume: state.mediaWidget.volume });
+        draftMediaWidget = { title: '', kind: 'auto', src: '' };
+        document.getElementById('admin-media-title').value = '';
+        document.getElementById('admin-media-url').value = '';
+        document.getElementById('admin-media-file').value = '';
+        saveState();
+        triggerAutoplayForWidget(false);
+        setFeedback(document.getElementById('admin-media-feedback'), 'Média retiré.', false);
+        showToast('Média retiré.');
+      });
+
+      attachImageDropzone(
+        document.getElementById('post-media-dropzone'),
+        document.getElementById('post-file-input'),
+        (url) => {
+          if (isLikelyImageUrl(url)) {
+            draftPostMedia.imageUrl = url;
+          } else {
+            draftPostMedia.linkUrl = url;
+            document.getElementById('post-link-input').value = url;
+          }
+          renderMediaPreviewBox(document.getElementById('post-media-preview-box'), draftPostMedia);
+          showToast('Image ou lien ajouté à la publication.');
+        }
+      );
+
+      document.getElementById('btn-apply-post-link').addEventListener('click', () => {
+        const raw = normalizeUrl(document.getElementById('post-link-input').value);
+        if (!isSafeUrl(raw)) {
+          showToast('Entre un lien valide (ex. https://...).');
+          return;
+        }
+        document.getElementById('post-link-input').value = raw;
+        if (isLikelyImageUrl(raw)) {
+          draftPostMedia.imageUrl = raw;
+        }
+        draftPostMedia.linkUrl = raw;
+        renderMediaPreviewBox(document.getElementById('post-media-preview-box'), draftPostMedia);
+        showToast('Lien prêt à être publié.');
+      });
+
+      document.getElementById('btn-clear-post-media').addEventListener('click', () => {
+        draftPostMedia = { imageUrl: '', linkUrl: '', docFile: null };
+        document.getElementById('post-file-input').value = '';
+        document.getElementById('post-link-input').value = '';
+        renderMediaPreviewBox(document.getElementById('post-media-preview-box'), draftPostMedia);
+      });
+
+      attachDossierDropzone(
+        document.getElementById('dossier-media-dropzone'),
+        document.getElementById('dossier-file-input')
+      );
+
+      document.getElementById('btn-apply-dossier-link').addEventListener('click', () => {
+        const raw = normalizeUrl(document.getElementById('dossier-link-input').value);
+        if (!isSafeUrl(raw)) {
+          showToast('Entre un lien valide (ex. https://...).');
+          return;
+        }
+        document.getElementById('dossier-link-input').value = raw;
+        if (isLikelyImageUrl(raw)) {
+          draftDossierMedia.imageUrl = raw;
+        }
+        draftDossierMedia.linkUrl = raw;
+        renderMediaPreviewBox(document.getElementById('dossier-media-preview-box'), draftDossierMedia);
+        showToast('Lien prêt à être publié.');
+      });
+
+      document.getElementById('btn-clear-dossier-media').addEventListener('click', () => {
+        draftDossierMedia = { imageUrl: '', linkUrl: '', docFile: null };
+        document.getElementById('dossier-file-input').value = '';
+        document.getElementById('dossier-link-input').value = '';
+        renderMediaPreviewBox(document.getElementById('dossier-media-preview-box'), draftDossierMedia);
+      });
+
+      attachImageDropzone(
+        document.getElementById('pm-media-dropzone'),
+        document.getElementById('pm-file-input'),
+        (url) => {
+          if (isLikelyImageUrl(url)) {
+            draftPmMedia.imageUrl = url;
+          } else {
+            draftPmMedia.linkUrl = url;
+            document.getElementById('pm-link-input').value = url;
+          }
+          renderMediaPreviewBox(document.getElementById('pm-media-preview-box'), draftPmMedia);
+          showToast('Image ou lien joint au message.');
+        }
+      );
+
+      document.getElementById('btn-apply-pm-link').addEventListener('click', () => {
+        const raw = normalizeUrl(document.getElementById('pm-link-input').value);
+        if (!isSafeUrl(raw)) {
+          showToast('Entre un lien valide (ex. https://...).');
+          return;
+        }
+        document.getElementById('pm-link-input').value = raw;
+        if (isLikelyImageUrl(raw)) {
+          draftPmMedia.imageUrl = raw;
+        }
+        draftPmMedia.linkUrl = raw;
+        renderMediaPreviewBox(document.getElementById('pm-media-preview-box'), draftPmMedia);
+        showToast('Lien joint au message.');
+      });
+
+      document.getElementById('btn-clear-pm-media').addEventListener('click', () => {
+        draftPmMedia = { imageUrl: '', linkUrl: '' };
+        document.getElementById('pm-file-input').value = '';
+        document.getElementById('pm-link-input').value = '';
+        renderMediaPreviewBox(document.getElementById('pm-media-preview-box'), draftPmMedia);
+      });
+
+      document.getElementById('profile-avatar-file').addEventListener('change', (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        readImageFileToDataUrl(f, (dataUrl) => {
+          draftAvatarUrl = dataUrl;
+          document.getElementById('profile-avatar-url').value = '';
+          const me = getCurrentNeighbor();
+          const currentName = document.getElementById('profile-name-input').value.trim() || me.name;
+          document.getElementById('profile-avatar-preview').innerHTML = renderAvatarHtml(
+            { name: currentName, avatarUrl: draftAvatarUrl },
+            'avatar-lg'
+          );
+          showToast('Photo sélectionnée — clique sur Enregistrer pour sauvegarder.');
+        }, 360);
+      });
+
+      document.getElementById('btn-apply-avatar-url').addEventListener('click', () => {
+        const raw = normalizeUrl(document.getElementById('profile-avatar-url').value);
+        if (!isSafeUrl(raw)) {
+          setFeedback(document.getElementById('profile-feedback'), 'Entre un lien http:// ou https:// valide pour la photo.', true);
+          return;
+        }
+        document.getElementById('profile-avatar-url').value = raw;
+        draftAvatarUrl = raw;
+        const me = getCurrentNeighbor();
+        const currentName = document.getElementById('profile-name-input').value.trim() || me.name;
+        document.getElementById('profile-avatar-preview').innerHTML = renderAvatarHtml(
+          { name: currentName, avatarUrl: draftAvatarUrl },
+          'avatar-lg'
+        );
+        setFeedback(document.getElementById('profile-feedback'), 'Photo prête — clique sur Enregistrer pour sauvegarder.', false);
+      });
+
+      document.getElementById('btn-remove-avatar').addEventListener('click', () => {
+        draftAvatarUrl = '';
+        document.getElementById('profile-avatar-file').value = '';
+        document.getElementById('profile-avatar-url').value = '';
+        const me = getCurrentNeighbor();
+        const currentName = document.getElementById('profile-name-input').value.trim() || me.name;
+        document.getElementById('profile-avatar-preview').innerHTML = renderAvatarHtml(
+          { name: currentName, avatarUrl: '' },
+          'avatar-lg'
+        );
+        setFeedback(document.getElementById('profile-feedback'), 'Photo retirée — clique sur Enregistrer pour confirmer.', false);
+      });
+
+      document.getElementById('btn-toggle-rules').addEventListener('click', (e) => {
+        const drawer = document.getElementById('header-rules-drawer');
+        const nextHidden = !drawer.classList.contains('hidden');
+        drawer.classList.toggle('hidden', nextHidden);
+        e.currentTarget.setAttribute('aria-expanded', String(!nextHidden));
+      });
+
+      document.getElementById('btn-close-lightbox').addEventListener('click', closeImageLightbox);
+      document.getElementById('image-lightbox-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'image-lightbox-modal') {
+          closeImageLightbox();
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeImageLightbox();
+      });
+
+      document.addEventListener('click', (e) => {
+        const linkEl = e.target.closest('a.media-link-card');
+        if (linkEl) {
+          const href = normalizeUrl(linkEl.dataset.openLink || linkEl.getAttribute('href') || '');
+          if (isSafeUrl(href)) {
+            e.preventDefault();
+            e.stopPropagation();
+            openExternalLinkSafe(href);
+          }
+          return;
+        }
+
+        const imgEl = e.target.closest('img.media-preview-img');
+        if (imgEl && imgEl.src) {
+          e.preventDefault();
+          e.stopPropagation();
+          openImageLightbox(imgEl.src);
+          return;
+        }
+
+        const emojiBtn = e.target.closest('.insert-emoji-btn');
+        if (emojiBtn) {
+          const bar = emojiBtn.closest('.emoji-bar');
+          const targetId = bar && bar.dataset.targetInput;
+          const inp = targetId ? document.getElementById(targetId) : null;
+          if (inp) {
+            inp.value = `${inp.value}${inp.value ? ' ' : ''}${emojiBtn.dataset.emoji}`;
+            inp.focus();
+          }
+        }
+      });
+
+      document.getElementById('btn-floating-admin').addEventListener('click', () => {
+        const panel = document.getElementById('admin-panel');
+        panel.classList.remove('hidden');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+
+      document.getElementById('btn-close-admin-panel').addEventListener('click', () => {
+        document.getElementById('admin-panel').classList.add('hidden');
+      });
+
+      document.querySelectorAll('.auth-mode-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.authMode = btn.dataset.authMode;
+          setFeedback(document.getElementById('neighbor-gate-feedback'), '', false);
+          renderAuthModes();
+        });
+      });
+
+      document.getElementById('neighbor-login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const typedName = document.getElementById('login-profile-name-input').value.trim();
+        const codeVal = document.getElementById('login-code-input').value.trim();
+        if (!typedName) {
+          setFeedback(document.getElementById('neighbor-gate-feedback'), 'Écris ton nom de profil pour te connecter.', true);
+          return;
+        }
+        if (!codeVal) {
+          setFeedback(document.getElementById('neighbor-gate-feedback'), 'Le mot de passe est obligatoire pour se connecter.', true);
+          return;
+        }
+
+        const pendingMatch = (state.pendingRegistrations || []).find(
+          (r) => String(r.name || '').trim().toLowerCase() === typedName.toLowerCase()
+        );
+        if (pendingMatch) {
+          setFeedback(
+            document.getElementById('neighbor-gate-feedback'),
+            `Ton inscription pour « ${pendingMatch.name} » est en attente de confirmation par l'administrateur.`,
+            true
+          );
+          return;
+        }
+
+        const targetNeighbor = findNeighborByName(typedName);
+        if (!targetNeighbor) {
+          setFeedback(
+            document.getElementById('neighbor-gate-feedback'),
+            `Aucun profil actif trouvé pour « ${typedName} ». Vérifie l'orthographe ou passe par Inscription.`,
+            true
+          );
+          return;
+        }
+
+        if (!isValidNeighborCodeForProfile(targetNeighbor, codeVal)) {
+          setFeedback(document.getElementById('neighbor-gate-feedback'), 'Mot de passe invalide pour ce profil.', true);
+          return;
+        }
+
+        state.currentUserId = targetNeighbor.id;
+        draftAvatarInitializedForId = '';
+        rsvpNamePrefilledForId = '';
+        targetNeighbor.online = true;
+        state.neighborUnlocked = true;
+        document.getElementById('login-code-input').value = '';
+        setFeedback(document.getElementById('neighbor-gate-feedback'), '', false);
+        saveState();
+        renderAll(false);
+        showToast(`Connecté : ${targetNeighbor.name}`);
+      });
+
+      document.getElementById('neighbor-register-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('register-name-input').value.trim();
+        const codeVal = document.getElementById('register-code-input').value.trim();
+        if (!name) {
+          setFeedback(document.getElementById('neighbor-gate-feedback'), 'Écris ton nom de profil pour t’inscrire.', true);
+          return;
+        }
+        if (!codeVal || codeVal.length < 4) {
+          setFeedback(document.getElementById('neighbor-gate-feedback'), 'Entre un mot de passe ou code d’accès (au moins 4 caractères).', true);
+          return;
+        }
+
+        const existingActive = findNeighborByName(name);
+        if (existingActive) {
+          existingActive.passwordDigest = computeDigest(codeVal);
+          state.pendingRegistrations = (state.pendingRegistrations || []).filter(
+            (r) => String(r.name || '').trim().toLowerCase() !== name.toLowerCase()
+          );
+          state.pendingRegistrations.push({
+            id: `req-${Date.now()}`,
+            name: existingActive.name,
+            passwordDigest: computeDigest(codeVal),
+            createdAt: "À l'instant (mise à jour)"
+          });
+        } else {
+          state.pendingRegistrations = (state.pendingRegistrations || []).filter(
+            (r) => String(r.name || '').trim().toLowerCase() !== name.toLowerCase()
+          );
+          state.pendingRegistrations.push({
+            id: `req-${Date.now()}`,
+            name,
+            passwordDigest: computeDigest(codeVal),
+            createdAt: "À l'instant"
+          });
+        }
+
+        document.getElementById('register-name-input').value = '';
+        document.getElementById('register-code-input').value = '';
+        saveState();
+        renderAdminPanel();
+        setFeedback(
+          document.getElementById('neighbor-gate-feedback'),
+          `Inscription envoyée à l'administrateur pour « ${name} ». Dès que l'administrateur confirme, tu pourras te connecter avec Connexion.`,
+          false
+        );
+        showToast("Demande envoyée à l'administrateur.");
+      });
+
+      document.getElementById('gate-admin-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = document.getElementById('gate-admin-code-input').value.trim();
+        if (!code) {
+          setFeedback(document.getElementById('neighbor-gate-feedback'), 'Le code est obligatoire.', true);
+          return;
+        }
+        if (isValidAdminCode(code)) {
+          state.adminUnlocked = true;
+          state.neighborUnlocked = true;
+          document.getElementById('gate-admin-code-input').value = '';
+          document.getElementById('admin-panel').classList.remove('hidden');
+          setFeedback(document.getElementById('neighbor-gate-feedback'), '', false);
+          saveState();
+          renderAll(false);
+          showToast('Administrateur connecté.');
+        } else {
+          setFeedback(document.getElementById('neighbor-gate-feedback'), 'Code invalide.', true);
+        }
+      });
+
+      document.getElementById('btn-lock-neighbor').addEventListener('click', () => {
+        state.neighborUnlocked = false;
+        state.adminUnlocked = false;
+        renderAll(false);
+        showToast('Espace privé verrouillé.');
+      });
+
+      document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = document.getElementById('admin-code-input').value.trim();
+        if (!code) {
+          setFeedback(document.getElementById('admin-login-feedback'), 'Entre le code.', true);
+          return;
+        }
+        if (isValidAdminCode(code)) {
+          state.adminUnlocked = true;
+          state.neighborUnlocked = true;
+          document.getElementById('admin-code-input').value = '';
+          setFeedback(document.getElementById('admin-login-feedback'), '', false);
+          saveState();
+          renderAll(false);
+          showToast('Administrateur connecté.');
+        } else {
+          setFeedback(document.getElementById('admin-login-feedback'), 'Code invalide.', true);
+        }
+      });
+
+      document.getElementById('btn-lock-admin').addEventListener('click', () => {
+        state.adminUnlocked = false;
+        renderAll(false);
+        showToast('Panneau administrateur verrouillé.');
+      });
+
+      document.getElementById('btn-repair-all').addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        LEGACY_KEYS.forEach((k) => localStorage.removeItem(k));
+        state = createDefaultState();
+        draftMediaWidget = { title: '', kind: 'auto', src: '' };
+        draftPostMedia = { imageUrl: '', linkUrl: '', docFile: null };
+        draftDossierMedia = { imageUrl: '', linkUrl: '', docFile: null };
+        draftPmMedia = { imageUrl: '', linkUrl: '' };
+        draftCommentMediaMap.clear();
+        draftAvatarUrl = '';
+        draftAvatarInitializedForId = '';
+        rsvpNamePrefilledForId = '';
+        openCommentEmojiKeys.clear();
+        openCommentAttachKeys.clear();
+        saveState();
+        renderAll(false);
+        showToast('Site réinitialisé à zéro.');
+      });
+
+      document.getElementById('admin-pending-registrations').addEventListener('click', (e) => {
+        if (!state.adminUnlocked) return;
+        const approveBtn = e.target.closest('.admin-approve-reg-btn');
+        if (approveBtn) {
+          const reqId = approveBtn.dataset.reqId;
+          const reqObj = (state.pendingRegistrations || []).find((r) => r.id === reqId);
+          if (!reqObj) return;
+          state.pendingRegistrations = (state.pendingRegistrations || []).filter((r) => r.id !== reqId);
+
+          const existing = findNeighborByName(reqObj.name);
+          if (existing) {
+            existing.passwordDigest = reqObj.passwordDigest || existing.passwordDigest;
+            existing.online = true;
+          } else {
+            state.neighbors.push({
+              id: `n-${Date.now()}`,
+              name: reqObj.name,
+              online: true,
+              passwordDigest: reqObj.passwordDigest || '',
+              avatarUrl: ''
+            });
+          }
+
+          saveState();
+          renderAll(false);
+          setFeedback(
+            document.getElementById('admin-action-feedback'),
+            `Inscription confirmée pour « ${reqObj.name} ». Le compte peut maintenant se connecter via Connexion.`,
+            false
+          );
+          showToast(`Compte confirmé : ${reqObj.name}`);
+          return;
+        }
+
+        const rejectBtn = e.target.closest('.admin-reject-reg-btn');
+        if (rejectBtn) {
+          const reqId = rejectBtn.dataset.reqId;
+          const reqObj = (state.pendingRegistrations || []).find((r) => r.id === reqId);
+          state.pendingRegistrations = (state.pendingRegistrations || []).filter((r) => r.id !== reqId);
+          saveState();
+          renderAdminPanel();
+          if (reqObj) {
+            setFeedback(document.getElementById('admin-action-feedback'), `Demande refusée pour « ${reqObj.name} ».`, false);
+          }
+        }
+      });
+
+      document.querySelectorAll('.preset-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.preset = btn.dataset.preset;
+          saveState();
+          applyTheme();
+          renderAdminPanel();
+          showToast(`Ambiance : ${btn.textContent}`);
+        });
+      });
+
+      document.getElementById('admin-card-opacity').addEventListener('input', (e) => {
+        const pct = Number(e.target.value || 62);
+        state.cardOpacity = Math.min(0.92, Math.max(0.35, pct / 100));
+        applyTheme();
+      });
+
+      document.getElementById('admin-card-opacity').addEventListener('change', () => {
+        saveState();
+        showToast(`Translucidité réglée à ${Math.round(state.cardOpacity * 100)} %.`);
+      });
+
+      document.getElementById('admin-bg-gallery').addEventListener('click', (e) => {
+        const cardBtn = e.target.closest('.pick-bg-gallery-btn');
+        if (!cardBtn) return;
+        const chosenUrl = cardBtn.dataset.bgUrl || '';
+        if (!isSafeUrl(chosenUrl)) return;
+        state.bgImage = chosenUrl;
+        document.getElementById('admin-bg-url').value = chosenUrl;
+        saveState();
+        applyTheme();
+        renderAdminPanel();
+        showToast('Image de fond appliquée.');
+      });
+
+      document.getElementById('admin-bg-file').addEventListener('change', (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        readImageFileToDataUrl(f, (dataUrl) => {
+          state.bgImage = dataUrl;
+          saveState();
+          applyTheme();
+          renderAdminPanel();
+          setFeedback(document.getElementById('admin-bg-feedback'), 'Nouvelle image de fond appliquée.', false);
+          showToast('Image de fond mise à jour.');
+        }, 1280);
+      });
+
+      document.getElementById('btn-apply-bg-url').addEventListener('click', () => {
+        const val = normalizeUrl(document.getElementById('admin-bg-url').value);
+        if (val && !isSafeUrl(val)) {
+          setFeedback(document.getElementById('admin-bg-feedback'), 'Utilise une URL http:// ou https://.', true);
+          return;
+        }
+        state.bgImage = val;
+        saveState();
+        applyTheme();
+        renderAdminPanel();
+        setFeedback(document.getElementById('admin-bg-feedback'), 'Fond d’écran mis à jour.', false);
+      });
+
+      document.getElementById('btn-clear-bg').addEventListener('click', () => {
+        state.bgImage = '';
+        document.getElementById('admin-bg-url').value = '';
+        document.getElementById('admin-bg-file').value = '';
+        saveState();
+        applyTheme();
+        renderAdminPanel();
+        setFeedback(document.getElementById('admin-bg-feedback'), 'Fond d’écran effacé.', false);
+      });
+
+      document.getElementById('btn-save-ui-hero').addEventListener('click', () => {
+        state.accentColor = document.getElementById('admin-accent-color').value || '#0284c7';
+        state.publishButtonLabel = document.getElementById('admin-publish-label').value.trim() || 'Publier sur le mur';
+        const titleInputVal = document.getElementById('admin-hero-title').value.trim() || DEFAULT_HERO.title;
+        state.hero = {
+          badge: titleInputVal,
+          title: titleInputVal,
+          motto: document.getElementById('admin-hero-motto').value.trim() || DEFAULT_HERO.motto,
+          description: document.getElementById('admin-hero-desc').value.trim() || DEFAULT_HERO.description,
+          schedule: document.getElementById('admin-hero-schedule').value.trim() || DEFAULT_HERO.schedule
+        };
+        saveState();
+        renderAll(false);
+        setFeedback(document.getElementById('admin-hero-feedback'), 'Réglages enregistrés.', false);
+        showToast('Bannière et boutons enregistrés.');
+      });
+
+      document.getElementById('btn-save-neighbor-key').addEventListener('click', () => {
+        const nextKey = document.getElementById('admin-new-neighbor-key').value.trim();
+        if (nextKey.length < 4) {
+          setFeedback(document.getElementById('admin-action-feedback'), 'Entre au moins 4 caractères.', true);
+          return;
+        }
+        state.neighborDigest = computeDigest(nextKey);
+        document.getElementById('admin-new-neighbor-key').value = '';
+        saveState();
+        setFeedback(document.getElementById('admin-action-feedback'), 'Code d’accès voisins mis à jour.', false);
+      });
+
+      document.getElementById('btn-save-admin-code').addEventListener('click', () => {
+        const nextAdmin = document.getElementById('admin-new-admin-code').value.trim();
+        if (nextAdmin.length < 4) {
+          setFeedback(document.getElementById('admin-action-feedback'), 'Entre au moins 4 caractères.', true);
+          return;
+        }
+        state.adminDigest = computeDigest(nextAdmin);
+        document.getElementById('admin-new-admin-code').value = '';
+        saveState();
+        setFeedback(document.getElementById('admin-action-feedback'), 'Code administrateur mis à jour.', false);
+      });
+
+      document.getElementById('admin-profiles-list').addEventListener('click', (e) => {
+        const delBtn = e.target.closest('.admin-delete-profile-btn');
+        if (!delBtn || !state.adminUnlocked) return;
+        if (state.neighbors.length <= 1) {
+          setFeedback(document.getElementById('admin-action-feedback'), 'Il faut garder au moins un profil.', true);
+          return;
+        }
+        const targetId = delBtn.dataset.id;
+        const targetObj = state.neighbors.find((n) => n.id === targetId);
+        if (!targetObj) return;
+        state.neighbors = state.neighbors.filter((n) => n.id !== targetId);
+        if (state.currentUserId === targetId) {
+          state.currentUserId = state.neighbors[0].id;
+          draftAvatarInitializedForId = '';
+          rsvpNamePrefilledForId = '';
+        }
+        if (state.pmRecipientId === targetId) {
+          const fallbackPeer = state.neighbors.find((n) => n.id !== state.currentUserId) || state.neighbors[0];
+          state.pmRecipientId = fallbackPeer ? fallbackPeer.id : '';
+        }
+        saveState();
+        renderAll(false);
+        setFeedback(document.getElementById('admin-action-feedback'), `Profil supprimé : ${targetObj.name}`, false);
+        showToast('Profil supprimé.');
+      });
+
+      document.getElementById('btn-restore-samples').addEventListener('click', () => {
+        state.posts = DEFAULT_POSTS.map((p) => ({ ...p, reactions: { ...p.reactions }, comments: p.comments.map((c) => ({ ...c })) }));
+        saveState();
+        renderAll(false);
+        showToast('Exemples restaurés.');
+      });
+
+      document.getElementById('btn-delete-all-posts').addEventListener('click', () => {
+        state.posts = [];
+        saveState();
+        renderAll(false);
+        showToast('Publications supprimées.');
+      });
+
+      document.getElementById('btn-export-config-json').addEventListener('click', () => {
+        renderAdminPanel();
+        setFeedback(document.getElementById('admin-config-feedback'), 'JSON actualisé.', false);
+      });
+
+      document.getElementById('btn-apply-config-json').addEventListener('click', () => {
+        try {
+          const parsed = JSON.parse(document.getElementById('admin-live-config-json').value);
+          const numAlpha = Number(parsed.cardOpacity);
+          state = {
+            ...state,
+            preset: parsed.preset || state.preset,
+            cardOpacity: Number.isFinite(numAlpha) ? Math.min(0.92, Math.max(0.35, numAlpha)) : state.cardOpacity,
+            bgImage: typeof parsed.bgImage === 'string' ? parsed.bgImage : state.bgImage,
+            accentColor: parsed.accentColor || state.accentColor,
+            publishButtonLabel: parsed.publishButtonLabel || state.publishButtonLabel,
+            hero: { ...state.hero, ...(parsed.hero || {}) },
+            rsvpResponses: parsed.rsvpResponses ? normalizeRsvpList(parsed.rsvpResponses) : state.rsvpResponses,
+            mediaWidget: parsed.mediaWidget ? normalizeMediaWidget(parsed.mediaWidget) : state.mediaWidget,
+            neighbors: normalizeNeighborsList(parsed.neighbors),
+            pendingRegistrations: normalizePendingRegistrations(parsed.pendingRegistrations),
+            posts: Array.isArray(parsed.posts) ? normalizePostsList(parsed.posts) : state.posts,
+            dossierPosts: Array.isArray(parsed.dossierPosts) ? normalizePostsList(parsed.dossierPosts) : state.dossierPosts
+          };
+          draftMediaWidget = {
+            title: state.mediaWidget.title || '',
+            kind: state.mediaWidget.kind || 'auto',
+            src: state.mediaWidget.src || ''
+          };
+          draftAvatarInitializedForId = '';
+          rsvpNamePrefilledForId = '';
+          saveState();
+          renderAll(true);
+          setFeedback(document.getElementById('admin-config-feedback'), 'JSON appliqué.', false);
+        } catch (_err) {
+          setFeedback(document.getElementById('admin-config-feedback'), 'JSON invalide.', true);
+        }
+      });
+
+      document.querySelectorAll('.main-nav-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.activeTab = btn.dataset.tab;
+          if (state.activeTab === 'pm') {
+            const me = getCurrentNeighbor();
+            markConversationRead(me.id, state.pmRecipientId);
+          }
+          saveState();
+          renderAll(false);
+        });
+      });
+
+      document.querySelectorAll('.filter-chip-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.dossierFilter = btn.dataset.dossierFilter || 'all';
+          saveState();
+          renderPosts();
+        });
+      });
+
+      function handleWallClick(e, boardKey) {
+        const reactBtn = e.target.closest('.react-post-btn');
+        if (reactBtn) {
+          const targetArr = boardKey === 'dossier' ? state.dossierPosts : state.posts;
+          const post = targetArr.find((p) => p.id === reactBtn.dataset.postId);
+          if (!post) return;
+          post.reactions = post.reactions || {};
+          const em = reactBtn.dataset.emoji;
+          post.reactions[em] = (post.reactions[em] || 0) + 1;
+          saveState();
+          renderPosts();
+          return;
+        }
+
+        const toggleCommentEmoji = e.target.closest('.toggle-comment-emoji-btn');
+        if (toggleCommentEmoji) {
+          const postId = toggleCommentEmoji.dataset.postId;
+          const drawerKey = `${boardKey}:${postId}`;
+          if (openCommentEmojiKeys.has(drawerKey)) {
+            openCommentEmojiKeys.delete(drawerKey);
+          } else {
+            openCommentEmojiKeys.add(drawerKey);
+          }
+          renderPosts();
+          return;
+        }
+
+        const toggleCommentAttach = e.target.closest('.toggle-comment-attach-btn');
+        if (toggleCommentAttach) {
+          const postId = toggleCommentAttach.dataset.postId;
+          const drawerKey = `${boardKey}:${postId}`;
+          if (openCommentAttachKeys.has(drawerKey)) {
+            openCommentAttachKeys.delete(drawerKey);
+          } else {
+            openCommentAttachKeys.add(drawerKey);
+          }
+          renderPosts();
+          return;
+        }
+
+        const applyLinkBtn = e.target.closest('.apply-comment-link-btn');
+        if (applyLinkBtn) {
+          const drawerKey = applyLinkBtn.dataset.drawerKey;
+          const drawer = applyLinkBtn.closest('.comment-attach-drawer');
+          const linkInp = drawer && drawer.querySelector('.comment-link-input');
+          const raw = normalizeUrl(linkInp && linkInp.value);
+          if (!isSafeUrl(raw)) {
+            showToast('Entre un lien valide (ex. https://...).');
+            return;
+          }
+          const draft = getCommentDraft(drawerKey);
+          if (isLikelyImageUrl(raw)) draft.imageUrl = raw;
+          draft.linkUrl = raw;
+          renderPosts();
+          showToast('Lien joint au commentaire.');
+          return;
+        }
+
+        const clearMediaBtn = e.target.closest('.clear-comment-media-btn');
+        if (clearMediaBtn) {
+          const drawerKey = clearMediaBtn.dataset.drawerKey;
+          draftCommentMediaMap.set(drawerKey, { imageUrl: '', linkUrl: '', docFile: null });
+          renderPosts();
+          showToast('Pièce jointe du commentaire retirée.');
+        }
+      }
+
+      function handleWallChange(e) {
+        const fileInp = e.target.closest('.comment-file-input');
+        if (!fileInp) return;
+        const f = fileInp.files && fileInp.files[0];
+        if (!f) return;
+        const drawerKey = fileInp.dataset.drawerKey;
+        const draft = getCommentDraft(drawerKey);
+        if (f.type && f.type.startsWith('image/')) {
+          readImageFileToDataUrl(f, (dataUrl) => {
+            draft.imageUrl = dataUrl;
+            renderPosts();
+            showToast('Image jointe au commentaire.');
+          }, 1000);
+        } else {
+          readAnyDocumentFile(f, (docObj) => {
+            draft.docFile = docObj;
+            renderPosts();
+            showToast(`Fichier joint au commentaire : ${docObj.name}`);
+          });
+        }
+      }
+
+      function handleWallCommentSubmit(e, boardKey) {
+        const form = e.target.closest('.comment-form');
+        if (!form) return;
+        e.preventDefault();
+        const postId = form.dataset.postId;
+        const drawerKey = `${boardKey}:${postId}`;
+        const input = form.querySelector('.comment-input');
+        const text = (input && input.value || '').trim();
+        const draft = getCommentDraft(drawerKey);
+        const cardEl = form.closest('.card');
+        const linkInp = cardEl && cardEl.querySelector('.comment-link-input');
+        const typedLink = normalizeUrl(linkInp && linkInp.value);
+        const finalLink = isSafeUrl(typedLink) ? typedLink : (isSafeUrl(draft.linkUrl) ? normalizeUrl(draft.linkUrl) : '');
+        const finalImg = draft.imageUrl || (isLikelyImageUrl(finalLink) ? finalLink : '');
+        const finalDoc = draft.docFile || null;
+
+        if (!text && !finalImg && !finalLink && !finalDoc) return;
+
+        const targetArr = boardKey === 'dossier' ? state.dossierPosts : state.posts;
+        const post = targetArr.find((p) => p.id === postId);
+        if (!post) return;
+        const me = getCurrentNeighbor();
+        post.comments.push({
+          id: `c-${Date.now()}`,
+          author: me.name,
+          text,
+          imageUrl: finalImg,
+          linkUrl: finalLink,
+          docFile: finalDoc
+        });
+        draftCommentMediaMap.delete(drawerKey);
+        openCommentAttachKeys.delete(drawerKey);
+        saveState();
+        renderPosts();
+      }
+
+      document.getElementById('new-post-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const author = document.getElementById('post-author-select').value;
+        const content = document.getElementById('post-content-input').value.trim();
+        const typedLink = normalizeUrl(document.getElementById('post-link-input').value);
+        const finalLink = isSafeUrl(typedLink) ? typedLink : (isSafeUrl(draftPostMedia.linkUrl) ? normalizeUrl(draftPostMedia.linkUrl) : '');
+        const finalImg = draftPostMedia.imageUrl || (isLikelyImageUrl(finalLink) ? finalLink : '');
+
+        if (!content && !finalImg && !finalLink) {
+          setFeedback(document.getElementById('post-form-feedback'), 'Écris un message ou ajoute une image / un lien avant de publier.', true);
+          return;
+        }
+        state.posts.unshift({
+          id: `p-${Date.now()}`,
+          author,
+          category: 'general',
+          content,
+          imageUrl: finalImg,
+          linkUrl: finalLink,
+          docFile: null,
+          createdAt: "À l'instant",
+          reactions: {},
+          comments: []
+        });
+        document.getElementById('post-content-input').value = '';
+        document.getElementById('post-file-input').value = '';
+        document.getElementById('post-link-input').value = '';
+        draftPostMedia = { imageUrl: '', linkUrl: '', docFile: null };
+        setFeedback(document.getElementById('post-form-feedback'), '', false);
+        saveState();
+        renderAll(false);
+        showToast('Publication ajoutée sur le mur.');
+      });
+
+      document.getElementById('new-dossier-post-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const author = document.getElementById('dossier-author-select').value;
+        const category = document.getElementById('dossier-category-select').value || 'general';
+        const content = document.getElementById('dossier-content-input').value.trim();
+        const typedLink = normalizeUrl(document.getElementById('dossier-link-input').value);
+        const finalLink = isSafeUrl(typedLink) ? typedLink : (isSafeUrl(draftDossierMedia.linkUrl) ? normalizeUrl(draftDossierMedia.linkUrl) : '');
+        const finalImg = draftDossierMedia.imageUrl || (isLikelyImageUrl(finalLink) ? finalLink : '');
+        const finalDoc = draftDossierMedia.docFile || null;
+
+        if (!content && !finalImg && !finalLink && !finalDoc) {
+          setFeedback(document.getElementById('dossier-form-feedback'), "Écris un message, une suggestion, une plainte ou joins un fichier/lien.", true);
+          return;
+        }
+        state.dossierPosts.unshift({
+          id: `d-${Date.now()}`,
+          author,
+          category,
+          content,
+          imageUrl: finalImg,
+          linkUrl: finalLink,
+          docFile: finalDoc,
+          createdAt: "À l'instant",
+          reactions: {},
+          comments: []
+        });
+        document.getElementById('dossier-content-input').value = '';
+        document.getElementById('dossier-file-input').value = '';
+        document.getElementById('dossier-link-input').value = '';
+        draftDossierMedia = { imageUrl: '', linkUrl: '', docFile: null };
+        setFeedback(document.getElementById('dossier-form-feedback'), '', false);
+        saveState();
+        renderAll(false);
+        showToast("Ajouté dans Le dossier d'en bas.");
+      });
+
+      document.getElementById('posts-list').addEventListener('click', (e) => handleWallClick(e, 'feed'));
+      document.getElementById('posts-list').addEventListener('change', handleWallChange);
+      document.getElementById('posts-list').addEventListener('submit', (e) => handleWallCommentSubmit(e, 'feed'));
+
+      document.getElementById('dossier-posts-list').addEventListener('click', (e) => handleWallClick(e, 'dossier'));
+      document.getElementById('dossier-posts-list').addEventListener('change', handleWallChange);
+      document.getElementById('dossier-posts-list').addEventListener('submit', (e) => handleWallCommentSubmit(e, 'dossier'));
+
+      document.getElementById('pm-sender-select').addEventListener('change', (e) => {
+        state.currentUserId = e.target.value;
+        draftAvatarInitializedForId = '';
+        rsvpNamePrefilledForId = '';
+        const me = getCurrentNeighbor();
+        markConversationRead(me.id, state.pmRecipientId);
+        saveState();
+        renderAll(false);
+      });
+
+      document.getElementById('pm-inbox-list').addEventListener('click', (e) => {
+        const itemBtn = e.target.closest('.inbox-item');
+        if (!itemBtn) return;
+        const peerId = itemBtn.dataset.peerId;
+        if (!peerId) return;
+        state.pmRecipientId = peerId;
+        const me = getCurrentNeighbor();
+        markConversationRead(me.id, peerId);
+        saveState();
+        renderAll(false);
+      });
+
+      document.getElementById('btn-mark-all-read').addEventListener('click', () => {
+        const me = getCurrentNeighbor();
+        state.privateMessages.forEach((m) => {
+          if (m.toId === me.id) m.read = true;
+        });
+        saveState();
+        renderAll(false);
+        showToast('Tous les messages marqués comme lus.');
+      });
+
+      document.getElementById('pm-thread-header').addEventListener('click', (e) => {
+        const clearBtn = e.target.closest('#btn-clear-conv');
+        if (!clearBtn) return;
+        const me = getCurrentNeighbor();
+        const peerId = state.pmRecipientId;
+        if (!peerId) return;
+        state.privateMessages = state.privateMessages.filter(
+          (m) => !((m.fromId === me.id && m.toId === peerId) || (m.fromId === peerId && m.toId === me.id))
+        );
+        saveState();
+        renderAll(false);
+        showToast('Conversation effacée.');
+      });
+
+      document.getElementById('pm-send-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('pm-message-input');
+        const text = input.value.trim();
+        const typedLink = normalizeUrl(document.getElementById('pm-link-input').value);
+        const finalLink = isSafeUrl(typedLink) ? typedLink : (isSafeUrl(draftPmMedia.linkUrl) ? normalizeUrl(draftPmMedia.linkUrl) : '');
+        const finalImg = draftPmMedia.imageUrl || (isLikelyImageUrl(finalLink) ? finalLink : '');
+
+        const me = getCurrentNeighbor();
+        const toId = state.pmRecipientId;
+        if ((!text && !finalImg && !finalLink) || !toId) return;
+        state.privateMessages.push({
+          id: `pm-${Date.now()}`,
+          fromId: me.id,
+          toId,
+          text,
+          imageUrl: finalImg,
+          linkUrl: finalLink,
+          time: "À l'instant",
+          read: true
+        });
+        input.value = '';
+        document.getElementById('pm-file-input').value = '';
+        document.getElementById('pm-link-input').value = '';
+        draftPmMedia = { imageUrl: '', linkUrl: '' };
+        saveState();
+        renderAll(false);
+      });
+
+      document.getElementById('neighbor-roster').addEventListener('click', (e) => {
+        const toggleBtn = e.target.closest('.toggle-online-btn');
+        if (toggleBtn) {
+          const n = state.neighbors.find((item) => item.id === toggleBtn.dataset.id);
+          if (n) {
+            n.online = !n.online;
+            saveState();
+            renderAccessAndTabs();
+            renderPresence();
+          }
+          return;
+        }
+        const pmBtn = e.target.closest('.open-pm-btn');
+        if (pmBtn) {
+          state.pmRecipientId = pmBtn.dataset.id;
+          state.activeTab = 'pm';
+          const me = getCurrentNeighbor();
+          markConversationRead(me.id, state.pmRecipientId);
+          saveState();
+          renderAll(false);
+        }
+      });
+
+      document.getElementById('profile-save-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const feedbackEl = document.getElementById('profile-feedback');
+        const nextName = document.getElementById('profile-name-input').value.trim();
+        const newPass = document.getElementById('profile-new-password-input').value.trim();
+        const confirmPass = document.getElementById('profile-confirm-password-input').value.trim();
+        const typedAvatarUrl = normalizeUrl(document.getElementById('profile-avatar-url').value);
+
+        if (!nextName) {
+          setFeedback(feedbackEl, 'Entre un nom affiché valide.', true);
+          return;
+        }
+
+        if (typedAvatarUrl && !isSafeUrl(typedAvatarUrl)) {
+          setFeedback(feedbackEl, 'Le lien de photo de profil doit commencer par http:// ou https://.', true);
+          return;
+        }
+
+        let passwordChanged = false;
+        if (newPass || confirmPass) {
+          if (newPass.length < 4) {
+            setFeedback(feedbackEl, 'Le nouveau mot de passe doit contenir au moins 4 caractères.', true);
+            return;
+          }
+          if (newPass !== confirmPass) {
+            setFeedback(feedbackEl, 'La confirmation du mot de passe ne correspond pas.', true);
+            return;
+          }
+          passwordChanged = true;
+        }
+
+        const me = getCurrentNeighbor();
+        const oldName = me.name;
+        me.name = nextName;
+        me.avatarUrl = typedAvatarUrl || draftAvatarUrl || '';
+        draftAvatarUrl = me.avatarUrl;
+        draftAvatarInitializedForId = me.id;
+        rsvpNamePrefilledForId = '';
+
+        if (passwordChanged) {
+          me.passwordDigest = computeDigest(newPass);
+        }
+
+        const renameInWall = (arr) => {
+          arr.forEach((p) => {
+            if (p.author === oldName) p.author = nextName;
+            p.comments.forEach((c) => { if (c.author === oldName) c.author = nextName; });
+          });
+        };
+        renameInWall(state.posts);
+        renameInWall(state.dossierPosts);
+
+        (state.rsvpResponses || []).forEach((r) => {
+          if (r.name === oldName) r.name = nextName;
+          (r.replies || []).forEach((rep) => {
+            if (rep.author === oldName) rep.author = nextName;
+          });
+        });
+
+        document.getElementById('profile-new-password-input').value = '';
+        document.getElementById('profile-confirm-password-input').value = '';
+        document.getElementById('profile-avatar-file').value = '';
+
+        saveState();
+        renderAll(false);
+
+        const msg = passwordChanged
+          ? 'Profil, photo et mot de passe enregistrés.'
+          : 'Profil et photo enregistrés.';
+        setFeedback(feedbackEl, msg, false);
+        showToast(msg);
+      });
+
+      buildEmojiBars();
+      buildBgGallery();
+      renderAll(true);
+    })();
+  </script>
+</body>
+</html>
