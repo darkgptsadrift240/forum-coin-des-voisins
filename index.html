@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -228,7 +227,14 @@
       border: 1px solid #86efac;
     }
 
+    .status-pill.sync-pending {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #16a34a; }
+    .status-pill.sync-pending .status-dot { background: #d97706; }
 
     .main-stack {
       padding-top: 1.1rem;
@@ -530,7 +536,6 @@
       padding: 0.95rem;
     }
 
-    /* SECTION RSVP PROFESSIONNELLE & PUBLIQUE */
     .rsvp-stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -1197,6 +1202,11 @@
       </div>
 
       <div class="header-actions">
+        <span id="cloud-sync-pill" class="status-pill sync-pending">
+          <span class="status-dot"></span>
+          <span id="cloud-sync-text">Supabase...</span>
+        </span>
+        <button type="button" id="btn-cloud-sync-now" class="btn btn-ghost btn-sm">Synchro cloud</button>
         <span id="neighbor-status-pill" class="status-pill hidden">
           <span class="status-dot"></span>
           <span>Espace privé ouvert</span>
@@ -1821,6 +1831,284 @@
     </div>
   </main>
 
+  <!-- SUPABASE CLOUD SYNC (etat_communaute + bucket voisins-fichiers jusqu'à 50 Mo) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (function () {
+      const SUPABASE_URL = 'https://znrscypdfkhxkdjgfxv.supabase.co';
+      const SUPABASE_ANON_KEY = 'sb_publishable_CJh-3BW91Kr9zlvXbzUviQ_tZpHasNf';
+      const TABLE_NAME = 'etat_communaute';
+      const ROW_ID = 'principal';
+      const BUCKET_NAME = 'voisins-fichiers';
+      const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
+
+      let sbClient = null;
+      try {
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+          sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: false, autoRefreshToken: false }
+          });
+        }
+      } catch (_e) {
+        sbClient = null;
+      }
+
+      let isPullingRemote = false;
+      let pushTimer = null;
+      let lastRemoteStamp = '';
+      let lastLocalPushTime = 0;
+
+      function setCloudPill(mode, text) {
+        const pill = document.getElementById('cloud-sync-pill');
+        const label = document.getElementById('cloud-sync-text');
+        if (!pill || !label) return;
+        label.textContent = text;
+        pill.classList.toggle('sync-pending', mode !== 'ok');
+      }
+
+      function buildSharedPayload() {
+        const raw = localStorage.getItem('coin_des_voisins_montmorency_v23');
+        if (!raw) return null;
+        try {
+          const parsed = JSON.parse(raw);
+          return {
+            preset: parsed.preset || 'riviere',
+            cardOpacity: parsed.cardOpacity ?? 0.62,
+            bgImage: parsed.bgImage || '',
+            accentColor: parsed.accentColor || '#0284c7',
+            publishButtonLabel: parsed.publishButtonLabel || 'Publier sur le mur',
+            adminDigest: parsed.adminDigest || '',
+            neighborDigest: parsed.neighborDigest || '',
+            hero: parsed.hero || {},
+            rsvpResponses: Array.isArray(parsed.rsvpResponses) ? parsed.rsvpResponses : [],
+            mediaWidget: parsed.mediaWidget || {},
+            neighbors: Array.isArray(parsed.neighbors) ? parsed.neighbors : [],
+            pendingRegistrations: Array.isArray(parsed.pendingRegistrations) ? parsed.pendingRegistrations : [],
+            posts: Array.isArray(parsed.posts) ? parsed.posts : [],
+            dossierPosts: Array.isArray(parsed.dossierPosts) ? parsed.dossierPosts : [],
+            privateMessages: Array.isArray(parsed.privateMessages) ? parsed.privateMessages : []
+          };
+        } catch (_e) {
+          return null;
+        }
+      }
+
+      async function pushToSupabase(forceToast) {
+        if (!sbClient || isPullingRemote) return;
+        const payload = buildSharedPayload();
+        if (!payload) return;
+
+        setCloudPill('pending', 'Envoi Supabase...');
+        const stamp = new Date().toISOString();
+        const noteText = `Synchro Coin des Voisins (${stamp})`;
+
+        try {
+          const { error } = await sbClient
+            .from(TABLE_NAME)
+            .upsert(
+              {
+                id: ROW_ID,
+                etat: payload,
+                note: noteText,
+                mis_a_jour_le: stamp
+              },
+              { onConflict: 'id' }
+            );
+
+          if (error) {
+            setCloudPill('pending', 'Hors ligne / Local');
+            if (forceToast && typeof showToast === 'function') {
+              showToast(`Synchro Supabase : ${error.message || 'vérifie la table etat_communaute'}`);
+            }
+            return;
+          }
+
+          lastRemoteStamp = stamp;
+          lastLocalPushTime = Date.now();
+          setCloudPill('ok', 'Supabase connecté');
+          if (forceToast && typeof showToast === 'function') {
+            showToast('État synchronisé sur Supabase.');
+          }
+        } catch (_err) {
+          setCloudPill('pending', 'Hors ligne / Local');
+          if (forceToast && typeof showToast === 'function') {
+            showToast('Connexion Supabase impossible — sauvegardé localement.');
+          }
+        }
+      }
+
+      function mergeRemoteIntoLocal(remoteEtat, remoteStamp) {
+        if (!remoteEtat || typeof remoteEtat !== 'object') return;
+        const stampKey = String(remoteStamp || JSON.stringify(remoteEtat).length);
+        if (stampKey === lastRemoteStamp) return;
+        if (Date.now() - lastLocalPushTime < 1200) return;
+
+        lastRemoteStamp = stampKey;
+        const rawLocal = localStorage.getItem('coin_des_voisins_montmorency_v23');
+        let currentLocal = {};
+        try {
+          currentLocal = rawLocal ? JSON.parse(rawLocal) : {};
+        } catch (_e) {
+          currentLocal = {};
+        }
+
+        const merged = {
+          ...currentLocal,
+          preset: remoteEtat.preset || currentLocal.preset || 'riviere',
+          cardOpacity: remoteEtat.cardOpacity ?? currentLocal.cardOpacity ?? 0.62,
+          bgImage: typeof remoteEtat.bgImage === 'string' ? remoteEtat.bgImage : (currentLocal.bgImage || ''),
+          accentColor: remoteEtat.accentColor || currentLocal.accentColor || '#0284c7',
+          publishButtonLabel: remoteEtat.publishButtonLabel || currentLocal.publishButtonLabel || 'Publier sur le mur',
+          adminDigest: remoteEtat.adminDigest || currentLocal.adminDigest || '',
+          neighborDigest: remoteEtat.neighborDigest || currentLocal.neighborDigest || '',
+          hero: { ...(currentLocal.hero || {}), ...(remoteEtat.hero || {}) },
+          rsvpResponses: Array.isArray(remoteEtat.rsvpResponses) ? remoteEtat.rsvpResponses : (currentLocal.rsvpResponses || []),
+          mediaWidget: remoteEtat.mediaWidget || currentLocal.mediaWidget || {},
+          neighbors: Array.isArray(remoteEtat.neighbors) && remoteEtat.neighbors.length ? remoteEtat.neighbors : (currentLocal.neighbors || []),
+          pendingRegistrations: Array.isArray(remoteEtat.pendingRegistrations) ? remoteEtat.pendingRegistrations : (currentLocal.pendingRegistrations || []),
+          posts: Array.isArray(remoteEtat.posts) ? remoteEtat.posts : (currentLocal.posts || []),
+          dossierPosts: Array.isArray(remoteEtat.dossierPosts) ? remoteEtat.dossierPosts : (currentLocal.dossierPosts || []),
+          privateMessages: Array.isArray(remoteEtat.privateMessages) ? remoteEtat.privateMessages : (currentLocal.privateMessages || []),
+          adminUnlocked: false,
+          neighborUnlocked: false
+        };
+
+        isPullingRemote = true;
+        try {
+          localStorage.setItem('coin_des_voisins_montmorency_v23', JSON.stringify(merged));
+          setCloudPill('ok', 'Supabase à jour');
+          if (typeof showToast === 'function') {
+            showToast('Nouvelles données reçues de Supabase — recharge pour appliquer.');
+          }
+        } catch (_e) {
+          setCloudPill('pending', 'Mémoire locale pleine');
+        } finally {
+          isPullingRemote = false;
+        }
+      }
+
+      async function pullFromSupabase(forceToast) {
+        if (!sbClient) {
+          setCloudPill('pending', 'Mode local');
+          return;
+        }
+        setCloudPill('pending', 'Lecture Supabase...');
+        try {
+          const { data, error } = await sbClient
+            .from(TABLE_NAME)
+            .select('id, etat, note, mis_a_jour_le')
+            .eq('id', ROW_ID)
+            .maybeSingle();
+
+          if (error) {
+            setCloudPill('pending', 'Hors ligne / Local');
+            if (forceToast && typeof showToast === 'function') {
+              showToast(`Lecture Supabase : ${error.message || 'erreur'}`);
+            }
+            return;
+          }
+
+          if (!data || !data.etat) {
+            await pushToSupabase(false);
+            return;
+          }
+
+          setCloudPill('ok', 'Supabase connecté');
+          mergeRemoteIntoLocal(data.etat, data.mis_a_jour_le || data.note);
+          if (forceToast && typeof showToast === 'function') {
+            showToast('Synchronisation Supabase terminée.');
+          }
+        } catch (_err) {
+          setCloudPill('pending', 'Hors ligne / Local');
+        }
+      }
+
+      window.__coinVoisinsOnLocalSave = function () {
+        if (isPullingRemote) return;
+        clearTimeout(pushTimer);
+        pushTimer = setTimeout(() => {
+          pushToSupabase(false);
+        }, 450);
+      };
+
+      window.__coinVoisinsUploadFile = async function (file, folderPrefix) {
+        if (!file) throw new Error('Aucun fichier sélectionné.');
+        if (file.size > MAX_UPLOAD_BYTES) {
+          throw new Error('Le fichier dépasse la limite de 50 Mo.');
+        }
+        if (!sbClient) {
+          throw new Error('Client Supabase non disponible.');
+        }
+        const safeName = String(file.name || 'fichier')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-zA-Z0-9._-]/g, '_');
+        const prefix = String(folderPrefix || 'partage').replace(/[^a-zA-Z0-9_-]/g, '_');
+        const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}`;
+
+        const { error: upErr } = await sbClient
+          .storage
+          .from(BUCKET_NAME)
+          .upload(path, file, {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: file.type || 'application/octet-stream'
+          });
+
+        if (upErr) {
+          throw new Error(upErr.message || 'Échec du téléversement dans voisins-fichiers.');
+        }
+
+        const { data: pubData } = sbClient
+          .storage
+          .from(BUCKET_NAME)
+          .getPublicUrl(path);
+
+        const publicUrl = pubData && pubData.publicUrl ? pubData.publicUrl : '';
+        if (!publicUrl) {
+          throw new Error("Impossible d'obtenir l'URL publique du fichier.");
+        }
+
+        return {
+          name: file.name || safeName,
+          mimeType: file.type || 'application/octet-stream',
+          size: file.size || 0,
+          publicUrl,
+          path
+        };
+      };
+
+      const syncNowBtn = document.getElementById('btn-cloud-sync-now');
+      if (syncNowBtn) {
+        syncNowBtn.addEventListener('click', async () => {
+          await pushToSupabase(false);
+          await pullFromSupabase(true);
+        });
+      }
+
+      if (sbClient) {
+        pullFromSupabase(false);
+        try {
+          sbClient
+            .channel('coin-voisins-etat-principal')
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: TABLE_NAME, filter: `id=eq.${ROW_ID}` },
+              (payload) => {
+                const row = payload && payload.new;
+                if (row && row.etat) {
+                  mergeRemoteIntoLocal(row.etat, row.mis_a_jour_le || row.note);
+                }
+              }
+            )
+            .subscribe();
+        } catch (_chErr) {}
+      } else {
+        setCloudPill('pending', 'Mode local');
+      }
+    })();
+  </script>
+
   <script>
     (function () {
       const STORAGE_KEY = 'coin_des_voisins_montmorency_v23';
@@ -2236,6 +2524,9 @@
           localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
         } catch (_e) {
           showToast('Stockage local plein : retire un gros fichier ou une grosse image.');
+        }
+        if (typeof window.__coinVoisinsOnLocalSave === 'function') {
+          window.__coinVoisinsOnLocalSave();
         }
       }
 
