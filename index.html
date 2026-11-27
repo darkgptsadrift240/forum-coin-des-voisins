@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0284c7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Coin des Voisins" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=192&q=80" />
   <title>Le Coin des Voisins — Rivière-Montmorency</title>
   <style>
     :root {
@@ -1202,11 +1208,7 @@
       </div>
 
       <div class="header-actions">
-        <span id="cloud-sync-pill" class="status-pill sync-pending">
-          <span class="status-dot"></span>
-          <span id="cloud-sync-text">Supabase...</span>
-        </span>
-        <button type="button" id="btn-cloud-sync-now" class="btn btn-ghost btn-sm">Synchro cloud</button>
+        <button type="button" id="btn-install-app" class="btn btn-secondary btn-sm">📲 Installer l'app</button>
         <span id="neighbor-status-pill" class="status-pill hidden">
           <span class="status-dot"></span>
           <span>Espace privé ouvert</span>
@@ -1375,17 +1377,7 @@
         </div>
 
         <div class="admin-block">
-          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">4. Sauvegarde JSON</h3>
-          <textarea id="admin-live-config-json" rows="6" class="code-box" style="width: 100%; margin-bottom: 0.5rem;"></textarea>
-          <div class="inline-row">
-            <button type="button" id="btn-export-config-json" class="btn btn-ghost">Actualiser JSON</button>
-            <button type="button" id="btn-apply-config-json" class="btn btn-primary">Appliquer JSON</button>
-          </div>
-          <p id="admin-config-feedback" class="feedback-msg hidden"></p>
-        </div>
-
-        <div class="admin-block">
-          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">5. Musique &amp; clip vidéo (FLAC, MP3, MP4 — lecteur à gauche)</h3>
+          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">4. Musique &amp; clip vidéo (FLAC, MP3, MP4 — lecteur à gauche)</h3>
           <p style="margin: 0 0 0.6rem; font-size: 0.84rem; color: var(--text-muted);">
             Ajoute une piste audio (FLAC, MP3, WAV, OGG) ou un clip vidéo (MP4, WEBM) via fichier ou lien direct. La petite page à gauche s'ouvre avec le son et démarre automatiquement à l'ouverture du site (avec pause, arrêt, volume et agrandissement).
           </p>
@@ -1416,6 +1408,44 @@
             <button type="button" id="btn-clear-media-widget" class="btn btn-danger">Retirer le média</button>
           </div>
           <p id="admin-media-feedback" class="feedback-msg hidden"></p>
+        </div>
+
+        <div class="admin-block">
+          <h3 style="margin: 0 0 0.6rem; font-size: 1rem; font-weight: 800;">5. Clés Supabase, tests d'écriture &amp; code source du site</h3>
+          <div class="inline-row" style="margin-bottom: 0.65rem;">
+            <span id="admin-cloud-sync-pill" class="status-pill sync-pending">
+              <span class="status-dot"></span>
+              <span id="admin-cloud-sync-text">Supabase...</span>
+            </span>
+          </div>
+
+          <div class="form-row-2" style="margin-bottom: 0.65rem;">
+            <div>
+              <label for="admin-supabase-url" class="label">URL du projet Supabase</label>
+              <input id="admin-supabase-url" type="url" class="input" placeholder="https://xxxx.supabase.co" autocomplete="off" />
+            </div>
+            <div>
+              <label for="admin-supabase-key" class="label">Clé publique Supabase (anon / publishable)</label>
+              <input id="admin-supabase-key" type="text" class="input" placeholder="sb_publishable_... ou eyJ..." autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="inline-row" style="margin-bottom: 0.55rem;">
+            <button type="button" id="btn-save-supabase-creds" class="btn btn-primary">Sauvegarder clés Supabase</button>
+            <button type="button" id="btn-cloud-sync-now" class="btn btn-secondary">Tester écriture / Synchro cloud</button>
+            <button type="button" id="btn-copy-full-html" class="btn btn-ghost">📋 Copier code index.html</button>
+          </div>
+          <p id="admin-supabase-feedback" class="feedback-msg hidden"></p>
+
+          <div style="margin-top: 0.85rem;">
+            <label for="admin-live-config-json" class="label">Sauvegarde JSON de l'état</label>
+            <textarea id="admin-live-config-json" rows="6" class="code-box" style="width: 100%; margin-bottom: 0.5rem;"></textarea>
+            <div class="inline-row">
+              <button type="button" id="btn-export-config-json" class="btn btn-ghost">Actualiser JSON</button>
+              <button type="button" id="btn-apply-config-json" class="btn btn-primary">Appliquer JSON</button>
+            </div>
+            <p id="admin-config-feedback" class="feedback-msg hidden"></p>
+          </div>
         </div>
       </div>
     </section>
@@ -1831,40 +1861,166 @@
     </div>
   </main>
 
-  <!-- SUPABASE CLOUD SYNC (etat_communaute + bucket voisins-fichiers jusqu'à 50 Mo) -->
+  <!-- INSTALLATION PWA (BUREAU / ANDROID / IPHONE) + SUPABASE CLOUD SYNC (ADMIN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     (function () {
-      const SUPABASE_URL = 'https://znrscypdfkhxkdjgfxv.supabase.co';
-      const SUPABASE_ANON_KEY = 'sb_publishable_CJh-3BW91Kr9zlvXbzUviQ_tZpHasNf';
+      let deferredInstallPrompt = null;
+      const installBtn = document.getElementById('btn-install-app');
+
+      function isIosSafari() {
+        const ua = window.navigator.userAgent || '';
+        const isIos = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        return isIos && !isStandalone;
+      }
+
+      function isStandaloneMode() {
+        return window.matchMedia('(display-mode: standalone)').matches || Boolean(window.navigator.standalone);
+      }
+
+      function updateInstallButton() {
+        if (!installBtn) return;
+        if (isStandaloneMode()) {
+          installBtn.textContent = '✅ App installée';
+          return;
+        }
+        if (deferredInstallPrompt) {
+          installBtn.textContent = '📲 Installer l\'app';
+        } else if (isIosSafari()) {
+          installBtn.textContent = '📲 Sur iPhone';
+        } else {
+          installBtn.textContent = '📲 Installer l\'app';
+        }
+      }
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        updateInstallButton();
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        updateInstallButton();
+        if (typeof showToast === 'function') {
+          showToast('Le Coin des Voisins est installé sur ton appareil.');
+        }
+      });
+
+      if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+          if (isStandaloneMode()) {
+            if (typeof showToast === 'function') {
+              showToast("L'application est déjà ouverte en mode installé.");
+            }
+            return;
+          }
+          if (deferredInstallPrompt) {
+            deferredInstallPrompt.prompt();
+            const choice = await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            updateInstallButton();
+            if (typeof showToast === 'function') {
+              showToast(choice && choice.outcome === 'accepted' ? 'Installation lancée.' : 'Installation annulée.');
+            }
+            return;
+          }
+          if (isIosSafari()) {
+            alert("Sur iPhone / iPad (Safari) : appuie sur Partager (icône carré avec flèche vers le haut) puis choisis « Sur l'écran d'accueil ».");
+            return;
+          }
+          alert("Pour installer sur le bureau ou Android : ouvre le menu du navigateur (⋮ ou ⋯) puis choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».");
+        });
+      }
+
+      updateInstallButton();
+
+      const DEFAULT_SUPABASE_URL = 'https://znrscypdfkhxkdjgfxv.supabase.co';
+      const DEFAULT_SUPABASE_KEY = 'sb_publishable_CJh-3BW91Kr9zlvXbzUviQ_tZpHasNf';
+      const CREDS_STORAGE_KEY = 'coin_voisins_supabase_creds_v1';
       const TABLE_NAME = 'etat_communaute';
       const ROW_ID = 'principal';
       const BUCKET_NAME = 'voisins-fichiers';
       const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 
+      let activeSupabaseUrl = DEFAULT_SUPABASE_URL;
+      let activeSupabaseKey = DEFAULT_SUPABASE_KEY;
       let sbClient = null;
-      try {
-        if (window.supabase && typeof window.supabase.createClient === 'function') {
-          sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: { persistSession: false, autoRefreshToken: false }
-          });
+      let realtimeChannel = null;
+
+      function loadSavedCreds() {
+        try {
+          const raw = localStorage.getItem(CREDS_STORAGE_KEY);
+          if (!raw) return;
+          const p = JSON.parse(raw);
+          if (p && typeof p.url === 'string' && p.url.trim()) activeSupabaseUrl = p.url.trim();
+          if (p && typeof p.key === 'string' && p.key.trim()) activeSupabaseKey = p.key.trim();
+        } catch (_e) {}
+      }
+
+      function setAdminFeedbackLocal(msg, isErr) {
+        const el = document.getElementById('admin-supabase-feedback');
+        if (!el) return;
+        if (!msg) {
+          el.textContent = '';
+          el.className = 'feedback-msg hidden';
+          return;
         }
-      } catch (_e) {
+        el.textContent = msg;
+        el.className = `feedback-msg ${isErr ? 'feedback-error' : 'feedback-ok'}`;
+      }
+
+      function setCloudPill(mode, text) {
+        const pill = document.getElementById('admin-cloud-sync-pill');
+        const label = document.getElementById('admin-cloud-sync-text');
+        if (!pill || !label) return;
+        label.textContent = text;
+        pill.classList.toggle('sync-pending', mode !== 'ok');
+      }
+
+      function initSupabaseClient() {
+        try {
+          if (sbClient && realtimeChannel && typeof sbClient.removeChannel === 'function') {
+            sbClient.removeChannel(realtimeChannel);
+            realtimeChannel = null;
+          }
+        } catch (_e) {}
+
         sbClient = null;
+        if (!activeSupabaseUrl || !activeSupabaseKey) {
+          setCloudPill('pending', 'Clés Supabase manquantes');
+          return;
+        }
+        try {
+          if (window.supabase && typeof window.supabase.createClient === 'function') {
+            sbClient = window.supabase.createClient(activeSupabaseUrl, activeSupabaseKey, {
+              auth: { persistSession: false, autoRefreshToken: false }
+            });
+            realtimeChannel = sbClient
+              .channel('coin-voisins-etat-principal-' + Date.now())
+              .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: TABLE_NAME, filter: `id=eq.${ROW_ID}` },
+                (payload) => {
+                  const row = payload && payload.new;
+                  if (row && row.etat) {
+                    mergeRemoteIntoLocal(row.etat, row.mis_a_jour_le || row.note);
+                  }
+                }
+              )
+              .subscribe();
+          }
+        } catch (_e) {
+          sbClient = null;
+          setCloudPill('pending', 'Erreur client Supabase');
+        }
       }
 
       let isPullingRemote = false;
       let pushTimer = null;
       let lastRemoteStamp = '';
       let lastLocalPushTime = 0;
-
-      function setCloudPill(mode, text) {
-        const pill = document.getElementById('cloud-sync-pill');
-        const label = document.getElementById('cloud-sync-text');
-        if (!pill || !label) return;
-        label.textContent = text;
-        pill.classList.toggle('sync-pending', mode !== 'ok');
-      }
 
       function buildSharedPayload() {
         const raw = localStorage.getItem('coin_des_voisins_montmorency_v23');
@@ -1893,17 +2049,17 @@
         }
       }
 
-      async function pushToSupabase(forceToast) {
-        if (!sbClient || isPullingRemote) return;
+      async function pushToSupabase(reportInAdmin) {
+        if (!sbClient || isPullingRemote) return false;
         const payload = buildSharedPayload();
-        if (!payload) return;
+        if (!payload) return false;
 
         setCloudPill('pending', 'Envoi Supabase...');
         const stamp = new Date().toISOString();
         const noteText = `Synchro Coin des Voisins (${stamp})`;
 
         try {
-          const { error } = await sbClient
+          const { data, error } = await sbClient
             .from(TABLE_NAME)
             .upsert(
               {
@@ -1913,27 +2069,31 @@
                 mis_a_jour_le: stamp
               },
               { onConflict: 'id' }
-            );
+            )
+            .select('id, mis_a_jour_le');
 
           if (error) {
-            setCloudPill('pending', 'Hors ligne / Local');
-            if (forceToast && typeof showToast === 'function') {
-              showToast(`Synchro Supabase : ${error.message || 'vérifie la table etat_communaute'}`);
+            setCloudPill('pending', 'Erreur écriture');
+            if (reportInAdmin) {
+              setAdminFeedbackLocal(`Écriture refusée sur « ${TABLE_NAME} » : ${error.message || 'erreur RLS / table'}`, true);
             }
-            return;
+            return false;
           }
 
           lastRemoteStamp = stamp;
           lastLocalPushTime = Date.now();
           setCloudPill('ok', 'Supabase connecté');
-          if (forceToast && typeof showToast === 'function') {
-            showToast('État synchronisé sur Supabase.');
+          if (reportInAdmin) {
+            const count = Array.isArray(data) ? data.length : 1;
+            setAdminFeedbackLocal(`Test écriture OK : ${count} ligne mise à jour (« ${ROW_ID} ») à ${new Date().toLocaleTimeString('fr-CA')}.`, false);
           }
-        } catch (_err) {
-          setCloudPill('pending', 'Hors ligne / Local');
-          if (forceToast && typeof showToast === 'function') {
-            showToast('Connexion Supabase impossible — sauvegardé localement.');
+          return true;
+        } catch (err) {
+          setCloudPill('pending', 'Hors ligne');
+          if (reportInAdmin) {
+            setAdminFeedbackLocal(`Erreur réseau Supabase : ${(err && err.message) || 'connexion impossible'}`, true);
           }
+          return false;
         }
       }
 
@@ -1977,20 +2137,17 @@
         try {
           localStorage.setItem('coin_des_voisins_montmorency_v23', JSON.stringify(merged));
           setCloudPill('ok', 'Supabase à jour');
-          if (typeof showToast === 'function') {
-            showToast('Nouvelles données reçues de Supabase — recharge pour appliquer.');
-          }
         } catch (_e) {
-          setCloudPill('pending', 'Mémoire locale pleine');
+          setCloudPill('pending', 'Stockage plein');
         } finally {
           isPullingRemote = false;
         }
       }
 
-      async function pullFromSupabase(forceToast) {
+      async function pullFromSupabase(reportInAdmin) {
         if (!sbClient) {
           setCloudPill('pending', 'Mode local');
-          return;
+          return false;
         }
         setCloudPill('pending', 'Lecture Supabase...');
         try {
@@ -2001,25 +2158,32 @@
             .maybeSingle();
 
           if (error) {
-            setCloudPill('pending', 'Hors ligne / Local');
-            if (forceToast && typeof showToast === 'function') {
-              showToast(`Lecture Supabase : ${error.message || 'erreur'}`);
+            setCloudPill('pending', 'Erreur lecture');
+            if (reportInAdmin) {
+              setAdminFeedbackLocal(`Lecture refusée : ${error.message || 'erreur'}.`, true);
             }
-            return;
+            return false;
           }
 
           if (!data || !data.etat) {
-            await pushToSupabase(false);
-            return;
+            return await pushToSupabase(reportInAdmin);
           }
 
           setCloudPill('ok', 'Supabase connecté');
           mergeRemoteIntoLocal(data.etat, data.mis_a_jour_le || data.note);
-          if (forceToast && typeof showToast === 'function') {
-            showToast('Synchronisation Supabase terminée.');
+          if (reportInAdmin) {
+            setAdminFeedbackLocal(
+              `Lecture & écriture OK sur « ${TABLE_NAME} » (id = « ${data.id} », maj : ${data.mis_a_jour_le || 'ok'}).`,
+              false
+            );
           }
-        } catch (_err) {
-          setCloudPill('pending', 'Hors ligne / Local');
+          return true;
+        } catch (err) {
+          setCloudPill('pending', 'Hors ligne');
+          if (reportInAdmin) {
+            setAdminFeedbackLocal(`Erreur réseau : ${(err && err.message) || 'échec'}`, true);
+          }
+          return false;
         }
       }
 
@@ -2029,6 +2193,13 @@
         pushTimer = setTimeout(() => {
           pushToSupabase(false);
         }, 450);
+      };
+
+      window.__coinVoisinsSyncCredsInputs = function () {
+        const uInp = document.getElementById('admin-supabase-url');
+        const kInp = document.getElementById('admin-supabase-key');
+        if (uInp) uInp.value = activeSupabaseUrl;
+        if (kInp) kInp.value = activeSupabaseKey;
       };
 
       window.__coinVoisinsUploadFile = async function (file, folderPrefix) {
@@ -2078,31 +2249,68 @@
         };
       };
 
-      const syncNowBtn = document.getElementById('btn-cloud-sync-now');
-      if (syncNowBtn) {
-        syncNowBtn.addEventListener('click', async () => {
-          await pushToSupabase(false);
-          await pullFromSupabase(true);
+      const saveCredsBtn = document.getElementById('btn-save-supabase-creds');
+      if (saveCredsBtn) {
+        saveCredsBtn.addEventListener('click', async () => {
+          const uVal = (document.getElementById('admin-supabase-url').value || '').trim();
+          const kVal = (document.getElementById('admin-supabase-key').value || '').trim();
+          if (!/^https?:\/\/\S+/i.test(uVal)) {
+            setAdminFeedbackLocal("Entre une URL Supabase valide (ex. https://xxxx.supabase.co).", true);
+            return;
+          }
+          if (!kVal) {
+            setAdminFeedbackLocal("Entre la clé publique Supabase (anon / publishable).", true);
+            return;
+          }
+          activeSupabaseUrl = uVal;
+          activeSupabaseKey = kVal;
+          try {
+            localStorage.setItem(CREDS_STORAGE_KEY, JSON.stringify({ url: activeSupabaseUrl, key: activeSupabaseKey }));
+          } catch (_e) {}
+          initSupabaseClient();
+          const ok = await pushToSupabase(true);
+          if (ok) await pullFromSupabase(true);
         });
       }
 
+      const syncNowBtn = document.getElementById('btn-cloud-sync-now');
+      if (syncNowBtn) {
+        syncNowBtn.addEventListener('click', async () => {
+          const wrote = await pushToSupabase(true);
+          if (wrote) {
+            await pullFromSupabase(true);
+          }
+        });
+      }
+
+      const copyHtmlBtn = document.getElementById('btn-copy-full-html');
+      if (copyHtmlBtn) {
+        copyHtmlBtn.addEventListener('click', async () => {
+          const fullSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(fullSource);
+            } else {
+              const ta = document.createElement('textarea');
+              ta.value = fullSource;
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              ta.remove();
+            }
+            setAdminFeedbackLocal(`Code index.html copié (${fullSource.length} caractères) — prêt à coller sur GitHub.`, false);
+            if (typeof showToast === 'function') showToast('Code index.html copié dans le presse-papier.');
+          } catch (_err) {
+            setAdminFeedbackLocal('Copie automatique bloquée par le navigateur : utilise Ctrl+U puis Ctrl+A / Ctrl+C sur la page.', true);
+          }
+        });
+      }
+
+      loadSavedCreds();
+      window.__coinVoisinsSyncCredsInputs();
+      initSupabaseClient();
       if (sbClient) {
         pullFromSupabase(false);
-        try {
-          sbClient
-            .channel('coin-voisins-etat-principal')
-            .on(
-              'postgres_changes',
-              { event: '*', schema: 'public', table: TABLE_NAME, filter: `id=eq.${ROW_ID}` },
-              (payload) => {
-                const row = payload && payload.new;
-                if (row && row.etat) {
-                  mergeRemoteIntoLocal(row.etat, row.mis_a_jour_le || row.note);
-                }
-              }
-            )
-            .subscribe();
-        } catch (_chErr) {}
       } else {
         setCloudPill('pending', 'Mode local');
       }
@@ -2537,7 +2745,7 @@
         item.className = 'toast-item';
         item.textContent = msg;
         box.appendChild(item);
-        setTimeout(() => item.remove(), 2800);
+        setTimeout(() => item.remove(), 3400);
       }
 
       function setFeedback(el, msg, isError) {
@@ -3540,6 +3748,9 @@
 
         if (!state.adminUnlocked) return;
 
+        if (typeof window.__coinVoisinsSyncCredsInputs === 'function') {
+          window.__coinVoisinsSyncCredsInputs();
+        }
         renderAdminPendingRegistrations();
         document.getElementById('admin-bg-url').value = /^https?:\/\//i.test(state.bgImage || '') ? state.bgImage : '';
         document.getElementById('admin-accent-color').value = state.accentColor || '#0284c7';
