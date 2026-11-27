@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0284c7" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <title>Le Coin des Voisins — Rivière-Montmorency</title>
+  <style>
+    :root {
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-soft: rgba(224, 242, 254, 0.92);
+      --secondary: #15803d;
+      --secondary-hover: #166534;
+      --card-alpha: 0.68;
+      --surface: rgba(255, 255, 255, var(--card-alpha));
+      --surface-subtle: rgba(255, 255, 255, calc(var(--card-alpha) - 0.12));
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --border: rgba(255, 255, 255, 0.55);
+      --border-dark: rgba(15, 23, 42, 0.14);
+      --glass-blur: blur(14px) saturate(135%);
+      --bg-color: #0b1120;
+      --bg-gradient: radial-gradient(circle at top right, rgba(2, 132, 199, 0.28), transparent 50%),
+                     radial-gradient(circle at bottom left, rgba(21, 128, 61, 0.22), transparent 50%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      background-image: var(--bg-gradient);
+      background-attachment: fixed;
+      line-height: 1.55;
+    }
+
+    .hidden { display: none !important; }
+
+    .container {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 0.9rem;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      padding: 0.75rem 0;
+    }
+
+    .brand-box { display: flex; align-items: center; gap: 0.7rem; }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-eyebrow {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .brand-title { margin: 0.1rem 0 0; font-size: 1.15rem; font-weight: 800; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: 1px solid #86efac;
+    }
+
+    .status-pill.syncing {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+
+    .main-stack {
+      padding-top: 1.15rem;
+      padding-bottom: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+      padding: 1.15rem;
+    }
+
+    .label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 0.7rem 0.85rem;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      font-family: inherit;
+      font-size: 0.94rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1rem;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--secondary); color: #fff; }
+    .btn-secondary:hover { background: var(--secondary-hover); }
+    .btn-ghost { background: rgba(255, 255, 255, 0.92); color: #1c1917; border-color: #cbd5e1; }
+
+    .inline-row { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: center; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr; gap: 0.85rem; }
+    @media (min-width: 640px) { .form-row-2 { grid-template-columns: 1fr 1fr; } }
+
+    .post-top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+
+    .feedback-msg { font-size: 0.85rem; font-weight: 700; margin: 0.5rem 0 0; }
+    .feedback-error { color: #b91c1c; }
+    .feedback-ok { color: #15803d; }
+
+    .media-preview-img {
+      max-width: 100%;
+      max-height: 260px;
+      border-radius: 12px;
+      margin-top: 0.55rem;
+      display: block;
+    }
+
+    .media-link-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.55rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 11px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 700;
+      font-size: 0.86rem;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .comments-box {
+      border-top: 1px solid var(--border-dark);
+      padding-top: 0.75rem;
+      margin-top: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .comment-item {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.88rem;
+    }
+
+    .toast-bar {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .toast-item {
+      background: #0f172a;
+      color: #fff;
+      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    }
+  </style>
+</head>
+<body>
+  <div id="toast-container" class="toast-bar" aria-live="polite"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-box">
+        <div class="brand-badge">RM</div>
+        <div>
+          <p class="brand-eyebrow">Rivière-Montmorency — Accès direct</p>
+          <h1 class="brand-title">Le Coin des Voisins</h1>
+        </div>
+      </div>
+
+      <div class="inline-row">
+        <span id="supabase-status-pill" class="status-pill syncing">
+          <span id="supabase-status-text">Connexion Supabase...</span>
+        </span>
+        <button type="button" id="btn-refresh-now" class="btn btn-ghost">Actualiser</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-stack">
+    <!-- ÉTAT DE LA COMMUNAUTÉ (TABLE public.etat_communaute) -->
+    <section class="card" aria-label="État de la communauté">
+      <div class="post-top">
+        <div>
+          <p class="brand-eyebrow">État en direct — Supabase</p>
+          <h2 style="margin: 0.15rem 0 0.25rem; font-size: 1.25rem; font-weight: 800;">
+            Du maïs, de l'eau fraîche et du bon temps entre voisins
+          </h2>
+          <p style="margin: 0; font-size: 0.88rem; color: var(--text-muted);">
+            5 à 7, étiré jusqu'à 10 h max, cet été — reste à voir pour la date.
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <span class="label" style="margin-bottom: 0.1rem;">État actuel</span>
+          <strong id="etat-badge-display" style="font-size: 1rem; color: var(--accent);">normale</strong>
+          <div id="etat-updated-display" style="font-size: 0.76rem; color: var(--text-muted);">—</div>
+        </div>
+      </div>
+
+      <form id="etat-form" style="margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.7rem;">
+        <div class="form-row-2">
+          <div>
+            <label for="etat-select" class="label">État de la communauté</label>
+            <select id="etat-select" class="select">
+              <option value="normale">Normale</option>
+              <option value="rassemblement">Rassemblement / 5 à 7</option>
+              <option value="meteo">Météo / Travaux</option>
+              <option value="pause">Pause</option>
+            </select>
+          </div>
+          <div>
+            <label for="etat-note-input" class="label">Note rapide pour les voisins</label>
+            <input id="etat-note-input" type="text" class="input" placeholder="Ex. Glacière d'eau fraîche prête, on jase..." />
+          </div>
+        </div>
+        <div class="inline-row" style="justify-content: space-between;">
+          <span id="etat-note-preview" style="font-size: 0.86rem; color: var(--text-muted);"></span>
+          <button type="submit" class="btn btn-primary">Enregistrer sur Supabase</button>
+        </div>
+        <p id="etat-feedback" class="feedback-msg hidden"></p>
+      </form>
+    </section>
+
+    <!-- NOUVELLE PUBLICATION + FICHIER (MAX 50 MO) -->
+    <section class="card" aria-label="Nouvelle publication">
+      <h3 style="margin: 0 0 0.65rem; font-size: 1.08rem; font-weight: 800;">Nouvelle publication</h3>
+      <form id="post-form" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div class="form-row-2">
+          <div>
+            <label for="post-author-input" class="label">Ton nom</label>
+            <input id="post-author-input" type="text" class="input" value="Fredneck" />
+          </div>
+          <div>
+            <label for="post-link-input" class="label">Lien (optionnel)</label>
+            <input id="post-link-input" type="url" class="input" placeholder="https://..." />
+          </div>
+        </div>
+
+        <div>
+          <label for="post-content-input" class="label">Message</label>
+          <textarea id="post-content-input" rows="3" class="textarea" placeholder="Écris ta nouvelle pour les voisins..."></textarea>
+        </div>
+
+        <div>
+          <label for="post-file-input" class="label">Joindre un fichier ou une photo (50 Mo maximum)</label>
+          <input id="post-file-input" type="file" class="input" style="padding: 0.4rem;" />
+          <p id="post-file-feedback" class="feedback-msg hidden"></p>
+          <div id="post-upload-preview"></div>
+        </div>
+
+        <div style="align-self: flex-end;">
+          <button type="submit" class="btn btn-secondary">Publier</button>
+        </div>
+        <p id="post-feedback" class="feedback-msg hidden"></p>
+      </form>
+    </section>
+
+    <!-- FIL DES PUBLICATIONS -->
+    <section id="posts-container" style="display: flex; flex-direction: column; gap: 0.95rem;"></section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (function () {
+      const SUPABASE_URL = 'https://znrscypdfkhxkdjgfxv.supabase.co';
+      const SUPABASE_KEY = 'sb_publishable_CJh-3BW91Kr9zlvXbzUviQ_tZpHasNf';
+      const TABLE_NAME = 'etat_communaute';
+      const ROW_ID = 'principal';
+      const BUCKET_NAME = 'voisins-fichiers';
+      const MAX_FILE_BYTES = 50 * 1024 * 1024; // 50 Mo maximum
+      const LOCAL_STORAGE_KEY = 'coin_voisins_rm_direct_v1';
+
+      const sb = (window.supabase && typeof window.supabase.createClient === 'function')
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+        : null;
+
+      let state = loadLocal();
+      let pendingAttachment = null; // { name, url, isImage }
+
+      function defaultState() {
+        return {
+          etat: 'normale',
+          note: '',
+          mis_a_jour_le: '',
+          posts: [
+            {
+              id: 'p-init-1',
+              author: 'Fredneck',
+              content: "Du maïs, de l'eau fraîche et du bon temps entre voisins. Pas de pression, juste du respect.",
+              linkUrl: '',
+              attachment: null,
+              createdAt: "Aujourd'hui",
+              comments: []
+            }
+          ]
+        };
+      }
+
+      function loadLocal() {
+        try {
+          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+          if (!raw) return defaultState();
+          const parsed = JSON.parse(raw);
+          const base = defaultState();
+          return {
+            etat: parsed.etat || base.etat,
+            note: typeof parsed.note === 'string' ? parsed.note : base.note,
+            mis_a_jour_le: parsed.mis_a_jour_le || '',
+            posts: Array.isArray(parsed.posts) ? parsed.posts : base.posts
+          };
+        } catch (_e) {
+          return defaultState();
+        }
+      }
+
+      function saveLocal() {
+        try {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+        } catch (_e) {}
+      }
+
+      function showToast(msg) {
+        const bar = document.getElementById('toast-container');
+        if (!bar) return;
+        const el = document.createElement('div');
+        el.className = 'toast-item';
+        el.textContent = msg;
+        bar.appendChild(el);
+        setTimeout(() => el.remove(), 3200);
+      }
+
+      function setFeedback(el, msg, isError) {
+        if (!el) return;
+        if (!msg) {
+          el.textContent = '';
+          el.className = 'feedback-msg hidden';
+          return;
+        }
+        el.textContent = msg;
+        el.className = `feedback-msg ${isError ? 'feedback-error' : 'feedback-ok'}`;
+      }
+
+      function setSyncStatus(text, isReady) {
+        const pill = document.getElementById('supabase-status-pill');
+        const txt = document.getElementById('supabase-status-text');
+        if (txt) txt.textContent = text;
+        if (pill) pill.classList.toggle('syncing', !isReady);
+      }
+
+      function escapeHtml(s) {
+        return String(s || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function formatMb(bytes) {
+        return (Number(bytes || 0) / (1024 * 1024)).toFixed(2);
+      }
+
+      async function uploadFile50Mb(file) {
+        if (!file) return null;
+        if (Number(file.size || 0) > MAX_FILE_BYTES) {
+          return {
+            error: `Fichier refusé (${formatMb(file.size)} Mo) : la limite est de 50 Mo maximum.`
+          };
+        }
+
+        const safeName = String(file.name || 'fichier').replace(/[^a-zA-Z0-9._-]/g, '_');
+        const path = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${safeName}`;
+        const isImage = Boolean(file.type && file.type.startsWith('image/'));
+
+        if (sb) {
+          const { error } = await sb.storage.from(BUCKET_NAME).upload(path, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+          if (!error) {
+            const { data } = sb.storage.from(BUCKET_NAME).getPublicUrl(path);
+            if (data && data.publicUrl) {
+              return { name: file.name, url: data.publicUrl, isImage };
+            }
+          }
+        }
+
+        const objectUrl = URL.createObjectURL(file);
+        return { name: file.name, url: objectUrl, isImage };
+      }
+
+      function parseNoteField(rawNote) {
+        if (!rawNote) return { text: '', posts: null };
+        if (typeof rawNote === 'string' && rawNote.trim().startsWith('{"__voisinsPosts":')) {
+          try {
+            const obj = JSON.parse(rawNote);
+            if (obj && obj.__voisinsPosts && Array.isArray(obj.posts)) {
+              return { text: String(obj.noteText || ''), posts: obj.posts };
+            }
+          } catch (_e) {}
+        }
+        return { text: String(rawNote), posts: null };
+      }
+
+      function serializeNoteField() {
+        return JSON.stringify({
+          __voisinsPosts: true,
+          noteText: state.note || '',
+          posts: state.posts || []
+        });
+      }
+
+      async function pushToSupabase() {
+        saveLocal();
+        if (!sb) return;
+        setSyncStatus('Enregistrement...', false);
+        const nowIso = new Date().toISOString();
+        state.mis_a_jour_le = nowIso;
+
+        const { error } = await sb
+          .from(TABLE_NAME)
+          .upsert({
+            id: ROW_ID,
+            etat: state.etat || 'normale',
+            note: serializeNoteField(),
+            mis_a_jour_le: nowIso
+          }, { onConflict: 'id' });
+
+        if (error) {
+          setSyncStatus('Local seulement', false);
+        } else {
+          setSyncStatus('Supabase connecté', true);
+        }
+      }
+
+      async function pullFromSupabase() {
+        if (!sb) {
+          setSyncStatus('Mode local', false);
+          return;
+        }
+        setSyncStatus('Synchro...', false);
+        const { data, error } = await sb
+          .from(TABLE_NAME)
+          .select('id, etat, note, mis_a_jour_le')
+          .eq('id', ROW_ID)
+          .maybeSingle();
+
+        if (error) {
+          setSyncStatus('Vérifier RLS', false);
+          return;
+        }
+
+        if (data) {
+          const parsed = parseNoteField(data.note);
+          state.etat = data.etat || state.etat || 'normale';
+          state.note = parsed.text;
+          state.mis_a_jour_le = data.mis_a_jour_le || state.mis_a_jour_le;
+          if (Array.isArray(parsed.posts)) {
+            state.posts = parsed.posts;
+          }
+          saveLocal();
+          render();
+        }
+        setSyncStatus('Supabase connecté', true);
+      }
+
+      function renderAttachment(att) {
+        if (!att || !att.url) return '';
+        if (att.isImage) {
+          return `<img src="${escapeHtml(att.url)}" alt="${escapeHtml(att.name || 'Image')}" class="media-preview-img" />`;
+        }
+        return `<a href="${escapeHtml(att.url)}" target="_blank" rel="noopener noreferrer" class="media-link-card">📎 ${escapeHtml(att.name || 'Fichier')}</a>`;
+      }
+
+      function render() {
+        document.getElementById('etat-badge-display').textContent = state.etat || 'normale';
+        document.getElementById('etat-select').value = state.etat || 'normale';
+        document.getElementById('etat-note-input').value = state.note || '';
+        document.getElementById('etat-note-preview').textContent = state.note
+          ? `Note active : ${state.note}`
+          : 'Aucune note active pour le moment.';
+        document.getElementById('etat-updated-display').textContent = state.mis_a_jour_le
+          ? `Mis à jour : ${new Date(state.mis_a_jour_le).toLocaleString('fr-CA')}`
+          : 'Prêt';
+
+        const prevBox = document.getElementById('post-upload-preview');
+        if (pendingAttachment && pendingAttachment.url) {
+          prevBox.innerHTML = renderAttachment(pendingAttachment);
+        } else {
+          prevBox.innerHTML = '';
+        }
+
+        const listEl = document.getElementById('posts-container');
+        if (!state.posts || !state.posts.length) {
+          listEl.innerHTML = '<div class="card"><p style="margin:0; color:var(--text-muted);">Aucune publication pour le moment.</p></div>';
+          return;
+        }
+
+        listEl.innerHTML = state.posts.map((p) => {
+          const commentsHtml = (p.comments || []).map((c) => `
+            <div class="comment-item">
+              <strong>${escapeHtml(c.author || 'Voisin')} :</strong> ${escapeHtml(c.text || '')}
+            </div>
+          `).join('');
+
+          const safeLink = p.linkUrl && /^https?:\/\//i.test(p.linkUrl) ? p.linkUrl : '';
+
+          return `
+            <article class="card">
+              <div class="post-top">
+                <strong>${escapeHtml(p.author || 'Voisin')}</strong>
+                <span style="font-size:0.78rem; color:var(--text-muted);">${escapeHtml(p.createdAt || '')}</span>
+              </div>
+              <p style="margin:0.6rem 0 0; white-space:pre-line;">${escapeHtml(p.content || '')}</p>
+              ${renderAttachment(p.attachment)}
+              ${safeLink ? `<a href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer" class="media-link-card">🌐 ${escapeHtml(safeLink)}</a>` : ''}
+              <div class="comments-box">
+                ${commentsHtml}
+                <form class="inline-row comment-form" data-post-id="${escapeHtml(p.id)}">
+                  <input type="text" class="input comment-input" placeholder="Ajouter un commentaire..." />
+                  <button type="submit" class="btn btn-ghost">Commenter</button>
+                </form>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('etat-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fb = document.getElementById('etat-feedback');
+        state.etat = document.getElementById('etat-select').value;
+        state.note = document.getElementById('etat-note-input').value.trim();
+        await pushToSupabase();
+        render();
+        setFeedback(fb, 'État et note enregistrés dans Supabase.', false);
+        showToast('État mis à jour.');
+      });
+
+      document.getElementById('post-file-input').addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        const fb = document.getElementById('post-file-feedback');
+        if (!file) {
+          pendingAttachment = null;
+          setFeedback(fb, '', false);
+          render();
+          return;
+        }
+        const res = await uploadFile50Mb(file);
+        if (!res) return;
+        if (res.error) {
+          pendingAttachment = null;
+          e.target.value = '';
+          setFeedback(fb, res.error, true);
+          showToast(res.error);
+          render();
+          return;
+        }
+        pendingAttachment = res;
+        setFeedback(fb, `Fichier prêt (${formatMb(file.size)} Mo) : ${file.name}`, false);
+        render();
+      });
+
+      document.getElementById('post-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fb = document.getElementById('post-feedback');
+        const fileFb = document.getElementById('post-file-feedback');
+        const author = document.getElementById('post-author-input').value.trim() || 'Voisin';
+        const content = document.getElementById('post-content-input').value.trim();
+        const linkUrl = document.getElementById('post-link-input').value.trim();
+
+        if (!content && !linkUrl && !pendingAttachment) {
+          setFeedback(fb, 'Écris un message, un lien ou joins un fichier (max 50 Mo).', true);
+          return;
+        }
+
+        state.posts.unshift({
+          id: `p-${Date.now()}`,
+          author,
+          content,
+          linkUrl,
+          attachment: pendingAttachment,
+          createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }),
+          comments: []
+        });
+
+        document.getElementById('post-content-input').value = '';
+        document.getElementById('post-link-input').value = '';
+        document.getElementById('post-file-input').value = '';
+        pendingAttachment = null;
+        setFeedback(fb, '', false);
+        setFeedback(fileFb, '', false);
+
+        await pushToSupabase();
+        render();
+        showToast('Publication envoyée.');
+      });
+
+      document.getElementById('posts-container').addEventListener('submit', async (e) => {
+        const form = e.target.closest('.comment-form');
+        if (!form) return;
+        e.preventDefault();
+        const inp = form.querySelector('.comment-input');
+        const text = (inp && inp.value || '').trim();
+        if (!text) return;
+        const post = state.posts.find((p) => p.id === form.dataset.postId);
+        if (!post) return;
+        const author = (document.getElementById('post-author-input').value || 'Voisin').trim();
+        post.comments = post.comments || [];
+        post.comments.push({ author, text });
+        inp.value = '';
+        await pushToSupabase();
+        render();
+      });
+
+      document.getElementById('btn-refresh-now').addEventListener('click', async () => {
+        await pullFromSupabase();
+        showToast('Synchronisé avec Supabase.');
+      });
+
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+      }
+
+      render();
+      pullFromSupabase();
+    })();
+  </script>
+</body>
+</html>
