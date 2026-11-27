@@ -1861,7 +1861,7 @@
     </div>
   </main>
 
-  <!-- INSTALLATION PWA (BUREAU / ANDROID / IPHONE) + SUPABASE CLOUD SYNC (ADMIN) -->
+  <!-- INSTALLATION PWA (ORDINATEUR / ANDROID / IPHONE) + SUPABASE CLOUD SYNC (ADMIN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     (function () {
@@ -1930,7 +1930,7 @@
             alert("Sur iPhone / iPad (Safari) : appuie sur Partager (icône carré avec flèche vers le haut) puis choisis « Sur l'écran d'accueil ».");
             return;
           }
-          alert("Pour installer sur le bureau ou Android : ouvre le menu du navigateur (⋮ ou ⋯) puis choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».");
+          alert("Pour installer sur ordinateur (Windows / Mac / Linux) ou Android :\n1. Regarde l'icône d'installation à droite de la barre d'adresse, ou ouvre le menu du navigateur (⋮ ou ⋯).\n2. Choisis « Installer Le Coin des Voisins... » ou « Installer l'application ».\n(Vérifie aussi que le site tourne en HTTPS et que manifest.json est présent dans le dossier.)");
         });
       }
 
@@ -2091,7 +2091,11 @@
         } catch (err) {
           setCloudPill('pending', 'Hors ligne');
           if (reportInAdmin) {
-            setAdminFeedbackLocal(`Erreur réseau Supabase : ${(err && err.message) || 'connexion impossible'}`, true);
+            const rawErr = (err && err.message) || 'connexion impossible';
+            const hint = /failed to fetch/i.test(rawErr)
+              ? " — vérifie l'URL du projet Supabase (projet actif/non en pause) et désactive tout bloqueur/extension sur ce site."
+              : '';
+            setAdminFeedbackLocal(`Écriture refusée sur « ${TABLE_NAME} » : ${rawErr}${hint}`, true);
           }
           return false;
         }
@@ -2181,7 +2185,11 @@
         } catch (err) {
           setCloudPill('pending', 'Hors ligne');
           if (reportInAdmin) {
-            setAdminFeedbackLocal(`Erreur réseau : ${(err && err.message) || 'échec'}`, true);
+            const rawErr = (err && err.message) || 'échec';
+            const hint = /failed to fetch/i.test(rawErr)
+              ? " — vérifie l'URL du projet Supabase (projet actif/non en pause) et désactive tout bloqueur/extension sur ce site."
+              : '';
+            setAdminFeedbackLocal(`Erreur réseau : ${rawErr}${hint}`, true);
           }
           return false;
         }
